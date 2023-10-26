@@ -1,4 +1,6 @@
-﻿namespace LongArithmetic.Core;
+﻿using System.Text;
+
+namespace LongArithmetic.Core;
 
 public class BigNumber
 {
@@ -6,6 +8,23 @@ public class BigNumber
     private readonly bool _isNegative;
 
     public static BigNumber Zero => new BigNumber("0");
+
+    public int Length
+    {
+        get => _digits.Count;
+    }
+    
+    public int this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _digits.Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            return _digits[index];
+        }
+    }
 
     public BigNumber(string value)
     {
@@ -38,6 +57,7 @@ public class BigNumber
     {
         _digits = digits;
         _isNegative = isNegative;
+        RemoveLeadingZeros();
     }
 
     #region Операторы
@@ -80,7 +100,39 @@ public class BigNumber
 
     private static BigNumber Multiply(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        // Handle the case where either input is zero
+        if (left.IsZero() || right.IsZero())
+        {
+            return BigNumber.Zero;
+        }
+
+        int resultLength = left.Length + right.Length;
+        List<int> result = new List<int>(resultLength);
+
+        // Initialize the result list with zeros
+        for (int i = 0; i < resultLength; i++)
+        {
+            result.Add(0);
+        }
+
+        for (int i = 0; i < left.Length; i++)
+        {
+            int carry = 0;
+            for (int j = 0; j < right.Length; j++)
+            {
+                int product = (left[i] * right[j]) + result[i + j] + carry;
+                carry = product / 10;
+                result[i + j] = product % 10;
+            }
+            if (carry > 0)
+            {
+                result[i + right.Length] += carry;
+            }
+        }
+
+        bool isNegative = left._isNegative != right._isNegative;
+
+        return new BigNumber(result, isNegative);
     }
 
     private static BigNumber Divide(BigNumber dividend, BigNumber divisor)
@@ -156,21 +208,47 @@ public class BigNumber
 
     #region HelperMethods
 
-    // ===== потом =====
-    // private bool IsZero()
-    // {
-    //     return _value.Trim('-') == "0";
-    // }
-    //
-    // public override string ToString()
-    // {
-    //     if (_isNegative)
-    //     {
-    //         return "-" + _value;
-    //     }
-    //
-    //     return _value;
-    // }
+    private bool IsZero()
+    {
+        return _digits.ToString()!.Trim('-') == "0";
+    }
+    
+    private void RemoveLeadingZeros()
+    {
+        int firstNonZeroIndex = 0;
+
+        // Find the index of the first non-zero digit
+        while (firstNonZeroIndex < _digits.Count && _digits[Length - 1 - firstNonZeroIndex] == 0)
+        {
+            firstNonZeroIndex++;
+        }
+
+        // Check if all digits are zero; in that case, leave one zero
+        if (firstNonZeroIndex == _digits.Count)
+        {
+            _digits = new List<int> { 0 };
+        }
+        else
+        {
+            // Create a new list with the leading zeros removed
+            _digits = _digits.GetRange(0, _digits.Count - firstNonZeroIndex);
+        }
+    }
+    
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        
+        if (_isNegative)
+            sb.Append('-');
+        
+        for (int i = Length - 1; i >= 0; i--)
+        {
+            sb.Append(_digits[i]);
+        }
+
+        return sb.ToString();
+    }
 
     #endregion
 }
