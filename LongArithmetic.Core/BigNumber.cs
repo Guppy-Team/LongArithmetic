@@ -40,11 +40,6 @@ public class BigNumber
         _isNegative = isNegative;
     }
 
-    public static void TestM()
-    {
-        Console.WriteLine("тест");
-    }
-
     #region Операторы
 
     public static BigNumber operator +(BigNumber left, BigNumber right)
@@ -128,7 +123,7 @@ public class BigNumber
         throw new NotImplementedException();
     }
 
-    public static BigNumber Abs1(BigNumber num)
+    public static BigNumber Abs(BigNumber num)
     {
         throw new NotImplementedException();
     }
