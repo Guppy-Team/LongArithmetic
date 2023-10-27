@@ -8,6 +8,7 @@ public class BigNumber
     private readonly bool _isNegative;
 
     public static BigNumber Zero => new BigNumber("0");
+    public static BigNumber One => new BigNumber("1");
 
     public int Length
     {
@@ -98,18 +99,24 @@ public class BigNumber
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="left">Первое число.</param>
+    /// <param name="right">Второе число.</param>
+    /// <returns>Возвращает результат перемножения двух чисел типа BigNumber.</returns>
     private static BigNumber Multiply(BigNumber left, BigNumber right)
     {
-        // Handle the case where either input is zero
+        // Одно из чисел равно 0
         if (left.IsZero() || right.IsZero())
         {
             return BigNumber.Zero;
         }
-
+        
         int resultLength = left.Length + right.Length;
         List<int> result = new List<int>(resultLength);
 
-        // Initialize the result list with zeros
+        // Заполнение нулями
         for (int i = 0; i < resultLength; i++)
         {
             result.Add(0);
@@ -208,40 +215,51 @@ public class BigNumber
 
     #region HelperMethods
 
+    /// <summary>
+    /// Проверяет является ли число нулём.
+    /// </summary>
+    /// <returns>Булево значение.</returns>
     private bool IsZero()
     {
         return _digits.ToString()!.Trim('-') == "0";
     }
     
+    /// <summary>
+    /// Удаляет ведущие нули.
+    /// </summary>
     private void RemoveLeadingZeros()
     {
         int firstNonZeroIndex = 0;
 
-        // Find the index of the first non-zero digit
+        // Находим индекс первого ненулевого элемента
         while (firstNonZeroIndex < _digits.Count && _digits[Length - 1 - firstNonZeroIndex] == 0)
         {
             firstNonZeroIndex++;
         }
 
-        // Check if all digits are zero; in that case, leave one zero
+        // Если все цифры равны нулю, то оставить один ноль
         if (firstNonZeroIndex == _digits.Count)
         {
             _digits = new List<int> { 0 };
         }
         else
         {
-            // Create a new list with the leading zeros removed
+            // Новый лист чисел, уже без ведущих нулей
             _digits = _digits.GetRange(0, _digits.Count - firstNonZeroIndex);
         }
     }
     
+    /// <summary>
+    /// Переводит числовое значение BigNumber объекта в его эквивалент в виде строки.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
         var sb = new StringBuilder();
         
         if (_isNegative)
             sb.Append('-');
-        
+
         for (int i = Length - 1; i >= 0; i--)
         {
             sb.Append(_digits[i]);
