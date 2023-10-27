@@ -93,9 +93,39 @@ public class BigNumber
         throw new NotImplementedException();
     }
 
+    // Работоспособность не проверял
+    /// <summary>
+    /// Метод возводящий одно число в степень другого
+    /// </summary>
+    /// 
+    /// <param name="baseValue">Число</param>
+    /// <param name="exponent">Степень</param>
+    /// 
+    /// <returns>Число, возведенное в степень</returns>
     public static BigNumber Pow(BigNumber baseValue, BigNumber exponent)
     {
-        throw new NotImplementedException();
+        // Если показатель степени равен 0, результат всегда равен 1.
+        if (exponent.Equals(new BigNumber("0"))) return new BigNumber("1");
+
+        // Инициализация результата и нуля.
+        BigNumber result = new BigNumber("1");
+        BigNumber zero = new BigNumber("0");
+
+        // Пока показатель степени не станет равным нулю
+        while (!exponent.Equals(zero))
+        {
+            // Проверяем младший разряд показателя степени
+            // Если младший разряд равен 1, умножаем результат на baseValue.
+            if (exponent._digits[0] % 2 == 1) result *= baseValue;
+
+            // Возводим baseValue в квадрат (для ускорения операции возведения в степень).
+            baseValue *= baseValue;
+
+            // Уменьшаем показатель степени вдвое (сдвигаем разряды вправо).
+            exponent /= 2;
+        }
+
+        return result;
     }
 
     // реализуем после всего основного
