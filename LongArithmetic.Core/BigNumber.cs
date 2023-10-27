@@ -106,16 +106,78 @@ public class BigNumber
 
     #endregion
 
-    # region Сравнение
+    #region Сравнение
 
+    // Работоспособность не проверял
+    /// <summary>
+    /// Метод сравнивающий два числа
+    /// Возвращает true, если число left больше right
+    /// Возвращает false, если число left меньше или равно right
+    /// </summary>
+    /// 
+    /// <param name="left">Первое число</param>
+    /// <param name="right">Второе число</param>
+    /// 
+    /// <returns> true/false </returns>
     public static bool GreaterThan(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        // Если left отрицательное, а right неотрицательное, то left всегда меньше.
+        if (left._isNegative && !right._isNegative) return false;
+        // Если left неотрицательное, а right отрицательное, то left всегда больше.
+        if (!left._isNegative && right._isNegative) return true;
+
+        // Если left имеет больше цифр, чем right, то left всегда больше.
+        if (left._digits.Count > right._digits.Count) return true;
+        // Если right имеет больше цифр, чем left, то left всегда меньше.
+        if (left._digits.Count < right._digits.Count) return false;
+
+        // Если количество цифр одинаковое, сравниваем числа посимвольно, начиная с самых старших разрядов.
+        for (int i = left._digits.Count - 1; i >= 0; i--)
+        {
+            // Если очередная цифра left больше соответствующей цифры right, то left больше.
+            if (left._digits[i] > right._digits[i]) return true;
+            // Если очередная цифра left меньше соответствующей цифры right, то left меньше.
+            if (left._digits[i] < right._digits[i]) return false;
+        }
+
+        // Если все цифры одинаковы, то числа равны.
+        return false;
     }
 
+    // Работоспособность не проверял
+    /// <summary>
+    /// Метод сравнивающий два числа
+    /// Возвращает true, если число left меньше right
+    /// Возвращает false, если число left больше или равно right
+    /// </summary>
+    /// 
+    /// <param name="left">Первое число</param>
+    /// <param name="right">Второе число</param>
+    /// 
+    /// <returns> true/false </returns>
     public static bool LessThan(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        // Если left отрицательное, а right неотрицательное, то left всегда меньше.
+        if (left._isNegative && !right._isNegative) return true;
+        // Если left неотрицательное, а right отрицательное, то left всегда больше.
+        if (!left._isNegative && right._isNegative) return false;
+
+        // Если left имеет больше цифр, чем right, то left всегда больше.
+        if (left._digits.Count > right._digits.Count) return false;
+        // Если right имеет больше цифр, чем left, то left всегда меньше.
+        if (left._digits.Count < right._digits.Count) return true;
+
+        // Если количество цифр одинаковое, сравниваем числа посимвольно, начиная с самых старших разрядов.
+        for (int i = left._digits.Count - 1; i >= 0; i--)
+        {
+            // Если очередная цифра left больше соответствующей цифры right, то left больше.
+            if (left._digits[i] > right._digits[i]) return false;
+            // Если очередная цифра left меньше соответствующей цифры right, то left меньше.
+            if (left._digits[i] < right._digits[i]) return true;
+        }
+
+        // Если все цифры одинаковы, то числа равны.
+        return false;
     }
 
     public static bool EqualTo(BigNumber left, BigNumber right)
@@ -123,9 +185,21 @@ public class BigNumber
         throw new NotImplementedException();
     }
 
+    // Работоспособность не проверял 
+    /// <summary>
+    /// Метод определяющий модуль числа
+    /// </summary>
+    /// 
+    /// <param name="num">Число</param>
+    /// 
+    /// <returns>Модуль числа</returns>
     public static BigNumber Abs(BigNumber num)
     {
-        throw new NotImplementedException();
+        // Создаем копию списка цифр, чтобы не изменять исходное число
+        List<int> absDigits = new List<int>(num._digits);
+
+        // Создаем новый объект BigNumber с абсолютным значением и тем же знаком
+        return new BigNumber(absDigits, false);
     }
 
     public static BigNumber GreatestCommonDivisor(BigNumber num)
