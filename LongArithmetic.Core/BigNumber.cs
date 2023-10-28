@@ -61,26 +61,83 @@ public class BigNumber
         RemoveLeadingZeros();
     }
 
+    private BigNumber()
+    {
+        _digits = new List<int> { 0 };
+        _isNegative = false;
+    }
+
     #region Операторы
 
     public static BigNumber operator +(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        int l = (int) left;
+        int r = (int) right;
+        int result = l + r;
+        return new BigNumber(result.ToString());
+    }
+    
+    public static BigNumber operator +(BigNumber left, int right)
+    {
+        int l = (int) left;
+        int result = l + right;
+        return new BigNumber(result.ToString());
     }
 
     public static BigNumber operator -(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        int l = (int) left;
+        int r = (int) right;
+        int result = l - r;
+        return new BigNumber(result.ToString());
     }
 
     public static BigNumber operator *(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        return Multiply(left, right);
     }
 
     public static BigNumber operator /(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        return Divide(left, right);
+    }
+    
+    public static bool operator <=(BigNumber left, BigNumber right)
+    {
+        int l = (int) left;
+        int r = (int) right;
+        return l <= r;
+    }
+    
+    public static bool operator >=(BigNumber left, BigNumber right)
+    {
+        int l = (int) left;
+        int r = (int) right;
+        return l >= r;
+    }
+    
+    public static bool operator >(BigNumber left, BigNumber right)
+    {
+        return GreaterThan(left, right);
+    }
+    
+    public static bool operator ==(BigNumber left, BigNumber right)
+    {
+        int l = (int) left;
+        int r = (int) right;
+        return l == r;
+    }
+    
+    public static bool operator !=(BigNumber left, BigNumber right)
+    {
+        int l = (int) left;
+        int r = (int) right;
+        return l != r;
+    }
+    
+    public static bool operator <(BigNumber left, BigNumber right)
+    {
+        return LessThan(left, right);
     }
 
     // Остальные перегрузки сюда
@@ -142,9 +199,79 @@ public class BigNumber
         return new BigNumber(result, isNegative);
     }
 
+    
+    /// <summary>
+    /// Делит одно значение BigNumber на другое и возвращает результат.
+    /// </summary>
+    /// <param name="dividend">Делимое.</param>
+    /// <param name="divisor">Делитель.</param>
+    /// <returns>Результат деления.</returns>
     private static BigNumber Divide(BigNumber dividend, BigNumber divisor)
     {
-        throw new NotImplementedException();
+        //! TODO Потом убрать
+        // При целочисленном делении вернуть ноль
+        if (divisor > dividend)
+        {
+            return BigNumber.Zero;
+        }
+        
+        // Если числа равны вернуть единицу
+        if (divisor == dividend)
+        {
+            return BigNumber.One;
+        }
+
+        // Получаем знак
+        bool isNegative = divisor._isNegative != dividend._isNegative;
+        
+        // Делаем оба числа положительными
+        dividend = BigNumber.Abs(dividend);
+        divisor = BigNumber.Abs(divisor);
+
+        // Инициализация листа с частным
+        List<int> quotient = new List<int>();
+        
+        // Индекс для слежения где в процессе деления мы находимся
+        int divisionIndex = dividend.Length - 1;
+        
+        // Процесс деления
+        while (divisionIndex >= 0)
+        {
+            int digit = 0;
+            // Временное делимое
+            int tempDividend = dividend[divisionIndex];
+
+            if (tempDividend == 0)
+            {
+                quotient.Insert(0, digit);
+                divisionIndex--;
+                continue;
+            }
+            
+            int exponent = 10;
+            
+            // Если временное делимое меньше делителя, то добавляем следующий раздряд
+            // Например 12 / 4 => 1 < 4 => добавляем десятки => 12 / 4
+            while (tempDividend < divisor)
+            {
+                tempDividend *= exponent;
+                exponent *= 10;
+                divisionIndex--;
+                tempDividend += dividend[divisionIndex];
+            }
+
+            while (tempDividend >= divisor)
+            {
+                tempDividend -= (int)divisor;
+                digit++;
+            }
+            
+            quotient.Insert(0, digit);
+            
+            divisionIndex--;
+        }
+        
+        return new BigNumber(quotient, isNegative);
     }
 
     public static BigNumber Mod(BigNumber dividend, BigNumber divisor)
@@ -287,7 +414,7 @@ public class BigNumber
         // Создаем копию списка цифр, чтобы не изменять исходное число
         List<int> absDigits = new List<int>(num._digits);
 
-        // Создаем новый объект BigNumber с абсолютным значением и тем же знаком
+        // Создаем новый объект BigNumber с абсолютным значением
         return new BigNumber(absDigits, false);
     }
 
@@ -307,12 +434,12 @@ public class BigNumber
 
     public static implicit operator BigNumber(int value)
     {
-        throw new NotImplementedException();
+        return new BigNumber(value.ToString());
     }
 
     public static explicit operator int(BigNumber bigInt)
     {
-        throw new NotImplementedException();
+        return int.Parse(bigInt.ToString());
     }
 
     #endregion
