@@ -291,14 +291,14 @@ public class BigNumber
     public static BigNumber Pow(BigNumber baseValue, BigNumber exponent)
     {
         // Если показатель степени равен 0, результат всегда равен 1.
-        if (exponent.Equals(new BigNumber("0"))) return new BigNumber("1");
+        if (exponent.Equals(BigNumber.Zero)) 
+            return BigNumber.One;
 
         // Инициализация результата и нуля.
-        BigNumber result = new BigNumber("1");
-        BigNumber zero = new BigNumber("0");
+        BigNumber result = BigNumber.One;
 
         // Пока показатель степени не станет равным нулю
-        while (!exponent.Equals(zero))
+        while (!exponent.Equals(BigNumber.Zero))
         {
             // Проверяем младший разряд показателя степени
             // Если младший разряд равен 1, умножаем результат на baseValue.
