@@ -298,7 +298,7 @@ public class BigNumber
         BigNumber result = BigNumber.One;
 
         // Пока показатель степени не станет равным нулю
-        while (!exponent.Equals(BigNumber.Zero))
+        while (exponent != BigNumber.Zero)
         {
             // Проверяем младший разряд показателя степени
             // Если младший разряд равен 1, умножаем результат на baseValue.

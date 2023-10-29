@@ -75,14 +75,12 @@
                 Command="{Binding CmdPowerOfTwo}"
                 Content="x ^ 2"
                 Grid.Column="2"
-                Grid.Row="0"
-                IsEnabled="False" />
+                Grid.Row="0" />
             <Button
                 Command="{Binding CmdPowerOfThree}"
                 Content="x ^ 3"
                 Grid.Column="3"
-                Grid.Row="0"
-                IsEnabled="False" />
+                Grid.Row="0" />
             <Button
                 Command="{Binding CmdSwap}"
                 Content="x swap y"
@@ -112,8 +110,7 @@
                 Command="{Binding CmdPow}"
                 Content="x ^ y"
                 Grid.Column="3"
-                Grid.Row="1"
-                IsEnabled="False" />
+                Grid.Row="1" />
             <Button
                 Command="{Binding CmdResultToX}"
                 Content="ответ → х"
