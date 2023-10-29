@@ -1,14 +1,14 @@
 ﻿<Window
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
-    MinHeight="400"
+    MinHeight="600"
     MinWidth="600"
-    TextElement.FontSize="22"
+    TextElement.FontSize="25"
     TextElement.FontWeight="Regular"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
-    Title="MainWindow"
+    Title="Большие числа"
     d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}"
     mc:Ignorable="d"
     x:Class="LongArithmetic.WPF.Views.MainWindow"
@@ -29,11 +29,20 @@
                 <Setter Property="MaxHeight" Value="120" />
                 <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
             </Style>
+            <Style BasedOn="{StaticResource MaterialDesignFlatAccentBgButton}" TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
         </StackPanel.Resources>
+        <Menu>
+            <MenuItem Command="{Binding CmdShowHelpWindow}" Header="Справка" />
+        </Menu>
+        <Separator />
         <TextBlock
             FontSize="30"
+            FontWeight="Bold"
             HorizontalAlignment="Center"
-            Text="Большие числа" />
+            Text="Проект 'Большие числа'" />
         <Label Content="х:" />
         <TextBox Text="{Binding FirstTextBoxText}" />
         <Label Content="у:" />
@@ -56,108 +65,98 @@
                 Command="{Binding CmdAdd}"
                 Content="x + y"
                 Grid.Column="0"
-                Grid.Row="0"
-                Margin="5" />
+                Grid.Row="0" />
             <Button
                 Command="{Binding CmdSubtract}"
                 Content="x - y"
                 Grid.Column="1"
-                Grid.Row="0"
-                Margin="5" />
+                Grid.Row="0" />
             <Button
                 Command="{Binding CmdPowerOfTwo}"
                 Content="x ^ 2"
                 Grid.Column="2"
                 Grid.Row="0"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdPowerOfThree}"
                 Content="x ^ 3"
                 Grid.Column="3"
                 Grid.Row="0"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdSwap}"
                 Content="x swap y"
                 Grid.Column="4"
-                Grid.Row="0"
-                Margin="5" />
+                Grid.Row="0" />
             <Button
                 Content="nothing"
                 Grid.Column="5"
-                Grid.Row="0"
-                Margin="5" />
+                Grid.Row="0" />
             <Button
                 Command="{Binding CmdMultiply}"
                 Content="x * y"
                 Grid.Column="0"
-                Grid.Row="1"
-                Margin="5" />
+                Grid.Row="1" />
             <Button
                 Command="{Binding CmdDivide}"
                 Content="x / y"
                 Grid.Column="1"
-                Grid.Row="1"
-                Margin="5" />
+                Grid.Row="1" />
             <Button
                 Command="{Binding CmdMod}"
                 Content="x % y"
                 Grid.Column="2"
                 Grid.Row="1"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdPow}"
                 Content="x ^ y"
                 Grid.Column="3"
                 Grid.Row="1"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdResultToX}"
                 Content="ответ → х"
                 Grid.Column="4"
-                Grid.Row="1"
-                Margin="5" />
+                Grid.Row="1" />
             <Button
                 Content="nothing"
                 Grid.Column="5"
-                Grid.Row="1"
-                Margin="5" />
+                Grid.Row="1" />
             <Button
                 Command="{Binding CmdGeneratePrimeNumber}"
                 Content="простое"
                 Grid.Column="0"
                 Grid.Row="2"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdGcd}"
                 Content="НОД"
                 Grid.Column="1"
                 Grid.Row="2"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdLcm}"
                 Content="НОК"
                 Grid.Column="2"
                 Grid.Row="2"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdFactorial}"
                 Content="x!"
                 Grid.Column="3"
                 Grid.Row="2"
-                Margin="5" />
+                IsEnabled="False" />
             <Button
                 Command="{Binding CmdResultToY}"
                 Content="ответ → у"
                 Grid.Column="4"
-                Grid.Row="2"
-                Margin="5" />
+                Grid.Row="2" />
             <Button
                 Command="{Binding CmdClear}"
                 Content="Очистить"
                 Grid.Column="5"
-                Grid.Row="2"
-                Margin="5" />
+                Grid.Row="2" />
         </Grid>
         <Label Content="Ответ:" />
         <TextBox Text="{Binding OutputText}" />

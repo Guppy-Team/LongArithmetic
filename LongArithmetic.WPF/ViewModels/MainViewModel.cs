@@ -121,10 +121,9 @@ public class MainViewModel : BaseViewModel
     {
         try
         {
-            //BigNumber num = new(FirstTextBoxText);
-            //BigNumber result = BigNumber.Pow(num, 2);
-            // OutputText = result.ToString(); 
-            OutputText = "Степень пока сломана";
+            BigNumber num = new(FirstTextBoxText);
+            BigNumber result = BigNumber.Pow(num, 2);
+             OutputText = result.ToString(); 
         }
         catch (Exception e)
         {
@@ -135,10 +134,9 @@ public class MainViewModel : BaseViewModel
     {
         try
         {
-            //BigNumber num = new(FirstTextBoxText);
-            //BigNumber result = BigNumber.Pow(num, 3);
-            // OutputText = result.ToString(); 
-            OutputText = "Степень пока сломана";
+            BigNumber num = new(FirstTextBoxText);
+            BigNumber result = BigNumber.Pow(num, 3);
+             OutputText = result.ToString(); 
         }
         catch (Exception e)
         {
@@ -153,10 +151,10 @@ public class MainViewModel : BaseViewModel
     {
         try
         {
-            //BigNumber num1 = new(FirstTextBoxText);
-            //BigNumber num2 = new(SecondTextBoxText);
-            //BigNumber result = BigNumber.Mod(num1, num2);
-            //OutputText = result.ToString(); 
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            BigNumber result = BigNumber.Mod(num1, num2);
+            OutputText = result.ToString();
         }
         catch (Exception e)
         {
@@ -167,11 +165,10 @@ public class MainViewModel : BaseViewModel
     {
         try
         {
-            // BigNumber num1 = new(FirstTextBoxText);
-            // BigNumber num2 = new(SecondTextBoxText);
-            // BigNumber result = BigNumber.Pow(num1, num2);
-            // OutputText = result.ToString();
-            OutputText = "Пока не сделано";
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            BigNumber result = BigNumber.Pow(num1, num2);
+            OutputText = result.ToString();
         }
         catch (Exception e)
         {
@@ -188,26 +185,23 @@ public class MainViewModel : BaseViewModel
     }
     private void GreatestCommonDivisor()
     {
-        //BigNumber bigNumber1 = new BigNumber(FirstTextBoxText);
-        //BigNumber bigNumber2 = new BigNumber(SecondTextBoxText);
+        BigNumber bigNumber1 = new BigNumber(FirstTextBoxText);
+        BigNumber bigNumber2 = new BigNumber(SecondTextBoxText);
         //BigNumber result = BigNumber.GreatestCommonDivisor(bigNumber1, bigNumber2);
         //OutputText = result.ToString();
-        OutputText = "Пока не сделано";
     }
     private void LowestCommonMultiple()
     {
-        //BigNumber bigNumber1 = new BigNumber(FirstTextBoxText);
-        //BigNumber bigNumber2 = new BigNumber(SecondTextBoxText);
+        BigNumber bigNumber1 = new BigNumber(FirstTextBoxText);
+        BigNumber bigNumber2 = new BigNumber(SecondTextBoxText);
         //BigNumber result = BigNumber.LowestCommonMultiple(bigNumber1, bigNumber2);
         //OutputText = result.ToString();
-        OutputText = "Пока не сделано";
     }
     private void Factorial()
     {
         //BigNumber bigNumber = new BigNumber(FirstTextBoxText);
         //BigNumber result = BigNumber.Factorial(bigNumber);
         //OutputText = result.ToString();
-        OutputText = "Пока не сделано";
     }
     private void ResultToY()
     {
