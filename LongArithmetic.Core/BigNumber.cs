@@ -146,12 +146,12 @@ public class BigNumber
 
     #region Операции
 
-    private static BigNumber Add(BigNumber left, BigNumber right)
+    public static BigNumber Add(BigNumber left, BigNumber right)
     {
         throw new NotImplementedException();
     }
 
-    private static BigNumber Subtract(BigNumber left, BigNumber right)
+    public static BigNumber Subtract(BigNumber left, BigNumber right)
     {
         throw new NotImplementedException();
     }
