@@ -57,7 +57,7 @@ public class BigNumber
     private BigNumber(List<int> digits, bool isNegative)
     {
         _digits = digits;
-        _isNegative = isNegative;
+        _isNegative = !digits.SequenceEqual(new List<int>(0)) && isNegative;
         RemoveLeadingZeros();
     }
 
@@ -123,9 +123,12 @@ public class BigNumber
     
     public static bool operator ==(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        return l == r;
+        if (BigNumber.GreaterThan(left, right))
+            return false;
+        if (BigNumber.LessThan(left, right))
+            return false;
+
+        return true;
     }
     
     public static bool operator !=(BigNumber left, BigNumber right)
@@ -214,6 +217,11 @@ public class BigNumber
         {
             return BigNumber.Zero;
         }
+
+        if (dividend == BigNumber.Zero)
+        {
+            return BigNumber.Zero;
+        }
         
         // Если числа равны вернуть единицу
         if (divisor == dividend)
@@ -291,7 +299,7 @@ public class BigNumber
     public static BigNumber Pow(BigNumber baseValue, BigNumber exponent)
     {
         // Если показатель степени равен 0, результат всегда равен 1.
-        if (exponent.Equals(BigNumber.Zero)) 
+        if (exponent == BigNumber.Zero) 
             return BigNumber.One;
 
         // Инициализация результата и нуля.
@@ -302,7 +310,7 @@ public class BigNumber
         {
             // Проверяем младший разряд показателя степени
             // Если младший разряд равен 1, умножаем результат на baseValue.
-            if (exponent._digits[0] % 2 == 1) result *= baseValue;
+            if (exponent[0] % 2 == 1) result *= baseValue;
 
             // Возводим baseValue в квадрат (для ускорения операции возведения в степень).
             baseValue *= baseValue;
