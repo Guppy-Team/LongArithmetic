@@ -1,4 +1,5 @@
-using LongArithmetic.ASP.DTOs;
+using LongArithmetic.ASP.DTOs.Requests;
+using LongArithmetic.ASP.DTOs.Responses;
 using LongArithmetic.Core;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,19 +10,19 @@ namespace LongArithmetic.ASP.Controllers;
 public class AddController : ControllerBase
 {
     [HttpPost]
-    public IActionResult AddNumbers([FromBody] Request request)
+    public IActionResult AddNumbers([FromBody] BaseRequest baseRequest)
     {
-        if (request == null)
+        if (baseRequest == null)
             return BadRequest("Неверные данные запроса.");
 
-        BigNumber x = new BigNumber(request.X);
-        BigNumber y = new BigNumber(request.Y);
+        BigNumber x = new BigNumber(baseRequest.X);
+        BigNumber y = new BigNumber(baseRequest.Y);
 
         if (x == null || y == null)
             return BadRequest("Недопустимые вводимые числа.");
 
         BigNumber result = x + y;
 
-        return Ok(new Response(result.ToString()));
+        return Ok(new BaseResponse(result.ToString()));
     }
 }
