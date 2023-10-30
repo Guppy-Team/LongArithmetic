@@ -10,11 +10,17 @@ export const Calculator = () => {
   const [answer, setAnswer] = useState('');
 
   const handleInputChange = (e, setState) => {
-    const value = e.target.value;
+    let value = e.target.value;
 
-    if (/^[0-9]*$/.test(value)) {
-      setState(value);
+    if (value.indexOf('-') === 0) {
+      value = '-' + value.replace(/-/g, '');
+    } else {
+      value = value.replace(/-/g, '');
     }
+
+    value = value.replace(/[^\d-]/g, '');
+
+    setState(value);
   };
 
   const performOperation = async (
