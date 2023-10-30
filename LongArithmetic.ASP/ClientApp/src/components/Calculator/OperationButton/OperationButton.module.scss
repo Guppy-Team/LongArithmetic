@@ -20,6 +20,7 @@
 	&:active {
 		transform: translateY(1px);
 		box-shadow: unset;
+		outline: none;
 	}
 
 	&:disabled {
