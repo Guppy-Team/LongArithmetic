@@ -76,4 +76,22 @@ public class ApiController : ControllerBase
 
         return Ok(new BaseResponse(result.ToString()));
     }
+
+    [HttpPost("pow")]
+    public IActionResult Pow([FromBody] BaseRequest request)
+    {
+        if (request == null)
+            return BadRequest("Неверные данные запроса.");
+
+        if (request.X == null || request.Y == null)
+            return BadRequest("Недопустимые вводимые числа.");
+
+        BigNumber x = new BigNumber(request.X);
+        BigNumber y = new BigNumber(request.Y);
+
+        BigNumber result = BigNumber.Pow(x, y);
+
+        return Ok(new BaseResponse(result.ToString()));
+    }
+
 }
