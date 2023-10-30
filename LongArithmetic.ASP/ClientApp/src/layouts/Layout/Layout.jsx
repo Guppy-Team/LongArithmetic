@@ -1,12 +1,15 @@
 import React from 'react';
-import { Container } from 'reactstrap';
 import { NavMenu } from '../NavMenu';
+
+import styles from './Layout.module.scss';
 
 export const Layout = ({ children }) => {
   return (
-    <div>
+    <div className="wrapper">
       <NavMenu />
-      <Container tag="main">{children}</Container>
+      <main className={styles.root}>
+        <div className="container">{children}</div>
+      </main>
     </div>
   );
 };

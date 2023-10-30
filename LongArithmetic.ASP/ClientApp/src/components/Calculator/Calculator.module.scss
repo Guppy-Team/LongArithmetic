@@ -1,0 +1,28 @@
+.root {
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 60px 650px;
+	gap: 10px;
+}
+
+.label {
+	margin-top: 10px;
+	font-style: italic;
+	text-align: right;
+}
+
+.input {
+	min-height: 70px;
+	padding: 10px;
+	border-radius: 7px;
+	border: 1px solid #121629;
+	background: #F6F4FB;
+	resize: vertical;
+}
+
+.buttonsWrapper {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	grid-column: 2;
+}
