@@ -103,12 +103,12 @@ export const Calculator = () => {
     performOperation('lessthan');
   };
 
-  const greaterThanOrEqual = () => {
-    performOperation('greaterthanorequal');
+  const greaterThanOrEqualTo = () => {
+    performOperation('greaterthanorequalto');
   };
 
-  const lessThanOrEqual = () => {
-    performOperation('lessthanorequal');
+  const lessThanOrEqualTo = () => {
+    performOperation('lessthanorequalto');
   };
 
   const equalTo = () => {
@@ -167,8 +167,8 @@ export const Calculator = () => {
     { onClick: absOperation, text: '|x|' },
     { onClick: greaterThan, text: 'x > y' },
     { onClick: lessThan, text: 'x < y' },
-    { onClick: greaterThanOrEqual, text: 'x >= y' },
-    { onClick: lessThanOrEqual, text: 'x <= y' },
+    { onClick: greaterThanOrEqualTo, text: 'x >= y' },
+    { onClick: lessThanOrEqualTo, text: 'x <= y' },
     { onClick: equalTo, text: 'x == y' },
   ];
 
