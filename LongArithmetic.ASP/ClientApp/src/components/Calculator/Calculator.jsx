@@ -94,19 +94,35 @@ export const Calculator = () => {
   };
 
   const divideOperation = () => {
-    performOperation('divide');
+    if (parseInt(inputY) === 0) {
+      alert('Нельзя делить на ноль.');
+    } else {
+      performOperation('divide');
+    }
   };
 
   const powOperation = () => {
-    performOperation('pow');
+    if (parseInt(inputX) === 0) {
+      alert('Нельзя возвести нуль в степень.');
+    } else {
+      performOperation('pow');
+    }
   };
 
   const pow2Operation = () => {
-    performOperation('pow', { x: inputX, y: '2' });
+    if (parseInt(inputX) === 0) {
+      alert('Нельзя возвести нуль в квадрат.');
+    } else {
+      performOperation('pow', { x: inputX, y: '2' });
+    }
   };
 
   const pow3Operation = () => {
-    performOperation('pow', { x: inputX, y: '3' });
+    if (parseInt(inputX) === 0) {
+      alert('Нельзя возвести нуль в куб.');
+    } else {
+      performOperation('pow', { x: inputX, y: '3' });
+    }
   };
 
   const factorialOperation = () => {
