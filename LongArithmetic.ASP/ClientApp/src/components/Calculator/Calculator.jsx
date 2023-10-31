@@ -208,20 +208,24 @@ export const Calculator = () => {
   ];
 
   const digitsCounter = () => {
-    const words = ['число', 'числа', 'чисел'];
-    const number = answer.length;
+    const words = ['цифра', 'цифры', 'цифр'];
+    let adjustedLength = answer.length;
     const cases = [2, 0, 1, 1, 1, 2];
 
+    if (answer.includes('-')) {
+      adjustedLength--;
+    }
+
     const nounIndex = [
-      number % 100 > 4 && number % 100 < 20
+      adjustedLength % 100 > 4 && adjustedLength % 100 < 20
         ? 2
-        : cases[number % 10 < 5 ? number % 10 : 5],
+        : cases[adjustedLength % 10 < 5 ? adjustedLength % 10 : 5],
     ];
 
     return (
       /^(-)?\d+$/.test(answer) && (
         <p className={styles.digitsCount}>
-          {answer.length} {words[nounIndex]}
+          {adjustedLength} {words[nounIndex]}
         </p>
       )
     );

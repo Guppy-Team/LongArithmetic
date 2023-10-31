@@ -23,8 +23,8 @@
 		outline: none;
 	}
 
-	&:hover:not(:disabled) {
-		background-color: #fff;
+	&:hover:not(:disabled):not(.functional) {
+		background-color: #e5e5e5;
 	}
 
 	&:disabled {
@@ -36,6 +36,10 @@
 
 .functional {
 	background-color: #B3C8FF;
+
+	&:hover {
+		background-color: #c3d4ff;
+	}
 }
 
 .remove {
