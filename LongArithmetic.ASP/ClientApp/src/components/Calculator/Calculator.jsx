@@ -37,7 +37,30 @@ export const Calculator = () => {
       });
 
       const data = await response.json();
-      setAnswer(data.result);
+
+      if (typeof data.result === 'boolean') {
+        if (operationName === 'greaterthan') {
+          setAnswer(data.result ? `Да, X больше Y` : `Нет, X не больше Y`);
+        } else if (operationName === 'lessthan') {
+          setAnswer(data.result ? `Да, X меньше Y` : `Нет, X не меньше Y`);
+        } else if (operationName === 'greaterthanorequalto') {
+          setAnswer(
+            data.result
+              ? `Да, X больше или равно Y`
+              : `Нет, X не больше или равно Y`,
+          );
+        } else if (operationName === 'lessthanorequalto') {
+          setAnswer(
+            data.result
+              ? `Да, X меньше или равно Y`
+              : `Нет, X не меньше или равно Y`,
+          );
+        } else if (operationName === 'equalto') {
+          setAnswer(data.result ? `Да, X равно Y` : `Нет, X не равно Y`);
+        }
+      } else {
+        setAnswer(data.result);
+      }
     } catch (error) {
       console.error('ОШИБКА:', error);
     }
