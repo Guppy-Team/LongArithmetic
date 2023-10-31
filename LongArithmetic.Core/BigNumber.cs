@@ -156,54 +156,66 @@ public class BigNumber
 
     public static BigNumber Add(BigNumber left, BigNumber right)
     {
-        if (left._isNegative && !right._isNegative)
-            return Subtract(right, new BigNumber(left._digits, false));
+        if (left._isNegative == right._isNegative)
+            return AddAbsolute(left, right, left._isNegative);
 
-        if (!left._isNegative && right._isNegative)
-            return Subtract(left, new BigNumber(right._digits, false));
+        int compare = CompareAbsolute(left, right);
 
-        int maxLength = Math.Max(left.Length, right.Length);
-        List<int> resultDigits = new List<int>(maxLength + 1);
-        int carry = 0;
+        if (compare == 0)
+            return BigNumber.Zero;
 
-        for (int i = 0; i < maxLength; i++)
-        {
-            int leftDigit = i < left.Length ? left[i] : 0;
-            int rightDigit = i < right.Length ? right[i] : 0;
+        if (compare > 0)
+            return SubtractAbsolute(left, right, left._isNegative);
 
-            int sum = leftDigit + rightDigit + carry;
-            resultDigits.Add(sum % 10);
-            carry = sum / 10;
-        }
-
-        if (carry > 0)
-            resultDigits.Add(carry);
-
-        bool isNegative = left._isNegative; // The sign of the result is based on the left operand.
-        return new BigNumber(resultDigits, isNegative);
+        return SubtractAbsolute(right, left, right._isNegative);
     }
 
     public static BigNumber Subtract(BigNumber left, BigNumber right)
     {
-        if (left._isNegative && !right._isNegative)
-            return Add(right, new BigNumber(left._digits, false));
+        if (left._isNegative != right._isNegative)
+            return AddAbsolute(left, right, left._isNegative);
 
-        if (!left._isNegative && right._isNegative)
-            return Add(left, new BigNumber(right._digits, false));
+        int compare = CompareAbsolute(left, right);
 
-        // Swap left and right to ensure the result is not negative.
-        if (left < right)
-            return Subtract(right, left).Negate();
+        if (compare == 0)
+            return BigNumber.Zero;
 
-        List<int> resultDigits = new List<int>(left.Length);
-        int borrow = 0;
+        if (compare > 0)
+            return SubtractAbsolute(left, right, left._isNegative);
 
-        for (int i = 0; i < left.Length; i++)
+        return SubtractAbsolute(right, left, !right._isNegative);
+    }
+
+    private static BigNumber AddAbsolute(BigNumber left, BigNumber right, bool isNegative)
+    {
+        List<int> result = new List<int>();
+        int carry = 0;
+        int maxLength = Math.Max(left.Length, right.Length);
+
+        for (int i = 0; i < maxLength || carry > 0; i++)
         {
-            int leftDigit = left[i];
-            int rightDigit = i < right.Length ? right[i] : 0;
+            int leftDigit = (i < left.Length) ? left[i] : 0;
+            int rightDigit = (i < right.Length) ? right[i] : 0;
+            int sum = leftDigit + rightDigit + carry;
+            result.Add(sum % 10);
+            carry = sum / 10;
+        }
 
+        return new BigNumber(result, isNegative);
+    }
+
+    private static BigNumber SubtractAbsolute(BigNumber left, BigNumber right, bool isNegative)
+    {
+        List<int> result = new List<int>();
+        int borrow = 0;
+        int maxLength = Math.Max(left.Length, right.Length);
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int leftDigit = (i < left.Length) ? left[i] : 0;
+            int rightDigit = (i < right.Length) ? right[i] : 0;
             int diff = leftDigit - rightDigit - borrow;
+
             if (diff < 0)
             {
                 diff += 10;
@@ -214,16 +226,32 @@ public class BigNumber
                 borrow = 0;
             }
 
-            resultDigits.Add(diff);
+            result.Add(diff);
         }
 
-        return new BigNumber(resultDigits, left._isNegative);
+        return new BigNumber(result, isNegative);
     }
 
-    private BigNumber Negate()
+    private static int CompareAbsolute(BigNumber left, BigNumber right)
     {
-        return new BigNumber(_digits, !_isNegative);
+        if (left.Length > right.Length)
+            return 1;
+
+        if (left.Length < right.Length)
+            return -1;
+
+        for (int i = left.Length - 1; i >= 0; i--)
+        {
+            if (left[i] > right[i])
+                return 1;
+
+            if (left[i] < right[i])
+                return -1;
+        }
+
+        return 0;
     }
+
 
     /// <summary>
     ///
