@@ -5,7 +5,7 @@ namespace LongArithmetic.Core;
 public class BigNumber
 {
     private List<int> _digits;
-    private readonly bool _isNegative;
+    private bool _isNegative;
 
     public static BigNumber Zero => new BigNumber("0");
     public static BigNumber One => new BigNumber("1");
@@ -14,7 +14,7 @@ public class BigNumber
     {
         get => _digits.Count;
     }
-    
+
     public int this[int index]
     {
         get
@@ -23,6 +23,7 @@ public class BigNumber
             {
                 throw new IndexOutOfRangeException();
             }
+
             return _digits[index];
         }
     }
@@ -71,25 +72,29 @@ public class BigNumber
 
     public static BigNumber operator +(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        int result = l + r;
-        return new BigNumber(result.ToString());
+        // int l = (int)left;
+        // int r = (int)right;
+        // int result = l + r;
+        // return new BigNumber(result.ToString());
+
+        return Add(left, right);
     }
-    
+
     public static BigNumber operator +(BigNumber left, int right)
     {
-        int l = (int) left;
+        int l = (int)left;
         int result = l + right;
         return new BigNumber(result.ToString());
     }
 
     public static BigNumber operator -(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        int result = l - r;
-        return new BigNumber(result.ToString());
+        // int l = (int)left;
+        // int r = (int)right;
+        // int result = l - r;
+        // return new BigNumber(result.ToString());
+
+        return Subtract(left, right);
     }
 
     public static BigNumber operator *(BigNumber left, BigNumber right)
@@ -101,26 +106,26 @@ public class BigNumber
     {
         return Divide(left, right);
     }
-    
+
     public static bool operator <=(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
+        int l = (int)left;
+        int r = (int)right;
         return l <= r;
     }
-    
+
     public static bool operator >=(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
+        int l = (int)left;
+        int r = (int)right;
         return l >= r;
     }
-    
+
     public static bool operator >(BigNumber left, BigNumber right)
     {
         return GreaterThan(left, right);
     }
-    
+
     public static bool operator ==(BigNumber left, BigNumber right)
     {
         if (BigNumber.GreaterThan(left, right))
@@ -130,14 +135,14 @@ public class BigNumber
 
         return true;
     }
-    
+
     public static bool operator !=(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
+        int l = (int)left;
+        int r = (int)right;
         return l != r;
     }
-    
+
     public static bool operator <(BigNumber left, BigNumber right)
     {
         return LessThan(left, right);
@@ -151,16 +156,77 @@ public class BigNumber
 
     public static BigNumber Add(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        if (left._isNegative && !right._isNegative)
+            return Subtract(right, new BigNumber(left._digits, false));
+
+        if (!left._isNegative && right._isNegative)
+            return Subtract(left, new BigNumber(right._digits, false));
+
+        int maxLength = Math.Max(left.Length, right.Length);
+        List<int> resultDigits = new List<int>(maxLength + 1);
+        int carry = 0;
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int leftDigit = i < left.Length ? left[i] : 0;
+            int rightDigit = i < right.Length ? right[i] : 0;
+
+            int sum = leftDigit + rightDigit + carry;
+            resultDigits.Add(sum % 10);
+            carry = sum / 10;
+        }
+
+        if (carry > 0)
+            resultDigits.Add(carry);
+
+        bool isNegative = left._isNegative; // The sign of the result is based on the left operand.
+        return new BigNumber(resultDigits, isNegative);
     }
 
     public static BigNumber Subtract(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        if (left._isNegative && !right._isNegative)
+            return Add(right, new BigNumber(left._digits, false));
+
+        if (!left._isNegative && right._isNegative)
+            return Add(left, new BigNumber(right._digits, false));
+
+        // Swap left and right to ensure the result is not negative.
+        if (left < right)
+            return Subtract(right, left).Negate();
+
+        List<int> resultDigits = new List<int>(left.Length);
+        int borrow = 0;
+
+        for (int i = 0; i < left.Length; i++)
+        {
+            int leftDigit = left[i];
+            int rightDigit = i < right.Length ? right[i] : 0;
+
+            int diff = leftDigit - rightDigit - borrow;
+            if (diff < 0)
+            {
+                diff += 10;
+                borrow = 1;
+            }
+            else
+            {
+                borrow = 0;
+            }
+
+            resultDigits.Add(diff);
+        }
+
+        return new BigNumber(resultDigits, left._isNegative);
+    }
+
+    private BigNumber Negate()
+    {
+        return new BigNumber(_digits, !_isNegative);
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="left">Первое число.</param>
     /// <param name="right">Второе число.</param>
@@ -172,7 +238,7 @@ public class BigNumber
         {
             return BigNumber.Zero;
         }
-        
+
         int resultLength = left.Length + right.Length;
         List<int> result = new List<int>(resultLength);
 
@@ -191,6 +257,7 @@ public class BigNumber
                 carry = product / 10;
                 result[i + j] = product % 10;
             }
+
             if (carry > 0)
             {
                 result[i + right.Length] += carry;
@@ -202,7 +269,7 @@ public class BigNumber
         return new BigNumber(result, isNegative);
     }
 
-    
+
     /// <summary>
     /// Делит одно значение BigNumber на другое и возвращает результат.
     /// </summary>
@@ -222,7 +289,7 @@ public class BigNumber
         {
             return BigNumber.Zero;
         }
-        
+
         // Если числа равны вернуть единицу
         if (divisor == dividend)
         {
@@ -231,17 +298,17 @@ public class BigNumber
 
         // Получаем знак
         bool isNegative = divisor._isNegative != dividend._isNegative;
-        
+
         // Делаем оба числа положительными
         dividend = BigNumber.Abs(dividend);
         divisor = BigNumber.Abs(divisor);
 
         // Инициализация листа с частным
         List<int> quotient = new List<int>();
-        
+
         // Индекс для слежения где в процессе деления мы находимся
         int divisionIndex = dividend.Length - 1;
-        
+
         // Процесс деления
         while (divisionIndex >= 0)
         {
@@ -255,9 +322,9 @@ public class BigNumber
                 divisionIndex--;
                 continue;
             }
-            
+
             int exponent = 10;
-            
+
             // Если временное делимое меньше делителя, то добавляем следующий раздряд
             // Например 12 / 4 => 1 < 4 => добавляем десятки => 12 / 4
             while (tempDividend < divisor)
@@ -273,12 +340,12 @@ public class BigNumber
                 tempDividend -= (int)divisor;
                 digit++;
             }
-            
+
             quotient.Insert(0, digit);
-            
+
             divisionIndex--;
         }
-        
+
         return new BigNumber(quotient, isNegative);
     }
 
@@ -291,15 +358,15 @@ public class BigNumber
     /// <summary>
     /// Метод возводящий одно число в степень другого
     /// </summary>
-    /// 
+    ///
     /// <param name="baseValue">Число</param>
     /// <param name="exponent">Степень</param>
-    /// 
+    ///
     /// <returns>Число, возведенное в степень</returns>
     public static BigNumber Pow(BigNumber baseValue, BigNumber exponent)
     {
         // Если показатель степени равен 0, результат всегда равен 1.
-        if (exponent == BigNumber.Zero) 
+        if (exponent == BigNumber.Zero)
             return BigNumber.One;
 
         // Инициализация результата и нуля.
@@ -338,10 +405,10 @@ public class BigNumber
     /// Возвращает true, если число left больше right
     /// Возвращает false, если число left меньше или равно right
     /// </summary>
-    /// 
+    ///
     /// <param name="left">Первое число</param>
     /// <param name="right">Второе число</param>
-    /// 
+    ///
     /// <returns> true/false </returns>
     public static bool GreaterThan(BigNumber left, BigNumber right)
     {
@@ -374,10 +441,10 @@ public class BigNumber
     /// Возвращает true, если число left меньше right
     /// Возвращает false, если число left больше или равно right
     /// </summary>
-    /// 
+    ///
     /// <param name="left">Первое число</param>
     /// <param name="right">Второе число</param>
-    /// 
+    ///
     /// <returns> true/false </returns>
     public static bool LessThan(BigNumber left, BigNumber right)
     {
@@ -409,13 +476,13 @@ public class BigNumber
         throw new NotImplementedException();
     }
 
-    // Работоспособность не проверял 
+    // Работоспособность не проверял
     /// <summary>
     /// Метод определяющий модуль числа
     /// </summary>
-    /// 
+    ///
     /// <param name="num">Число</param>
-    /// 
+    ///
     /// <returns>Модуль числа</returns>
     public static BigNumber Abs(BigNumber num)
     {
@@ -462,7 +529,7 @@ public class BigNumber
     {
         return _digits.ToString()!.Trim('-') == "0";
     }
-    
+
     /// <summary>
     /// Удаляет ведущие нули.
     /// </summary>
@@ -487,7 +554,7 @@ public class BigNumber
             _digits = _digits.GetRange(0, _digits.Count - firstNonZeroIndex);
         }
     }
-    
+
     /// <summary>
     /// Переводит числовое значение BigNumber объекта в его эквивалент в виде строки.
     /// </summary>
@@ -495,7 +562,7 @@ public class BigNumber
     public override string ToString()
     {
         var sb = new StringBuilder();
-        
+
         if (_isNegative)
             sb.Append('-');
 
