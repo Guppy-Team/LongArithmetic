@@ -11,16 +11,31 @@ export const Calculator = () => {
 
   const handleInputChange = (e, setState) => {
     let value = e.target.value;
+    value = processInputValue(value);
+    setState(value);
+  };
 
+  const handleClipboardPaste = (setState) => {
+    navigator.clipboard.readText().then((value) => {
+      if (containsNumericValue(value)) {
+        value = processInputValue(value);
+        setState(value);
+      }
+    });
+  };
+
+  const containsNumericValue = (value) => {
+    return /\d/.test(value);
+  };
+
+  const processInputValue = (value) => {
     if (value.indexOf('-') === 0) {
       value = '-' + value.replace(/-/g, '');
     } else {
       value = value.replace(/-/g, '');
     }
-
     value = value.replace(/[^\d-]/g, '');
-
-    setState(value);
+    return value;
   };
 
   const performOperation = async (
@@ -138,32 +153,25 @@ export const Calculator = () => {
     performOperation('equalto');
   };
 
-  const answerToX = () => {
-    const regex = /^(-)?\d+$/;
+  const answerToInput = (setState) => {
+    const regex = /^(-)?\d+/;
 
     if (answer === '') {
-      setInputX('0');
+      setState('0');
+    } else if (regex.test(answer)) {
+      setState(answer);
     } else {
-      if (regex.test(answer)) {
-        setInputX(answer);
-      } else {
-        setInputX('0');
-      }
+      setState('0');
     }
   };
 
-  const answerToY = () => {
-    const regex = /^(-)?\d+$/;
+  // Примените эти функции к inputX и inputY
+  const answerToX = () => {
+    answerToInput(setInputX);
+  };
 
-    if (answer === '') {
-      setInputY('0');
-    } else {
-      if (regex.test(answer)) {
-        setInputY(answer);
-      } else {
-        setInputY('0');
-      }
-    }
+  const answerToY = () => {
+    answerToInput(setInputY);
   };
 
   const swapInputs = () => {
@@ -190,14 +198,22 @@ export const Calculator = () => {
     { onClick: modOperation, text: 'mod', disabled: true },
     { onClick: pow3Operation, text: 'x ^ 3' },
     { onClick: answerToX, text: 'ответ -> x', functional: true },
-    { onClick: () => console.log('тык'), text: 'буфер -> x', functional: true },
+    {
+      onClick: () => handleClipboardPaste(setInputX),
+      text: 'буфер -> x',
+      functional: true,
+    },
 
     { onClick: isPrime, text: 'простое?', disabled: true },
     { onClick: gcdOperation, text: 'НОД', disabled: true },
     { onClick: lcmOperation, text: 'НОК', disabled: true },
     { onClick: powOperation, text: 'x ^ y' },
     { onClick: answerToY, text: 'ответ -> y', functional: true },
-    { onClick: () => console.log('тык'), text: 'буфер -> y', functional: true },
+    {
+      onClick: () => handleClipboardPaste(setInputY),
+      text: 'буфер -> y',
+      functional: true,
+    },
 
     { onClick: absOperation, text: '|x|' },
     { onClick: greaterThan, text: 'x > y' },
