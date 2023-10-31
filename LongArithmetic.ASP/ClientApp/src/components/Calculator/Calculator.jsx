@@ -139,18 +139,30 @@ export const Calculator = () => {
   };
 
   const answerToX = () => {
+    const regex = /^(-)?\d+$/;
+
     if (answer === '') {
       setInputX('0');
     } else {
-      setInputX(answer);
+      if (regex.test(answer)) {
+        setInputX(answer);
+      } else {
+        setInputX('0');
+      }
     }
   };
 
   const answerToY = () => {
+    const regex = /^(-)?\d+$/;
+
     if (answer === '') {
       setInputY('0');
     } else {
-      setInputY(answer);
+      if (regex.test(answer)) {
+        setInputY(answer);
+      } else {
+        setInputY('0');
+      }
     }
   };
 
