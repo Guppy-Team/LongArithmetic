@@ -71,8 +71,8 @@ export const Calculator = () => {
     performOperation('pow', { x: inputX, y: '3' });
   };
 
-  const exponentOperation = () => {
-    performOperation('exponent');
+  const factorialOperation = () => {
+    performOperation('factorial');
   };
 
   const modOperation = () => {
@@ -95,12 +95,40 @@ export const Calculator = () => {
     performOperation('abs', { x: inputX });
   };
 
+  const greaterThan = () => {
+    performOperation('greaterthan');
+  };
+
+  const lessThan = () => {
+    performOperation('lessthan');
+  };
+
+  const greaterThanOrEqual = () => {
+    performOperation('greaterthanorequal');
+  };
+
+  const lessThanOrEqual = () => {
+    performOperation('lessthanorequal');
+  };
+
+  const equalTo = () => {
+    performOperation('equalto');
+  };
+
   const answerToX = () => {
-    setInputX(answer);
+    if (answer === '') {
+      setInputX('0');
+    } else {
+      setInputX(answer);
+    }
   };
 
   const answerToY = () => {
-    setInputY(answer);
+    if (answer === '') {
+      setInputY('0');
+    } else {
+      setInputY(answer);
+    }
   };
 
   const swapInputs = () => {
@@ -117,7 +145,7 @@ export const Calculator = () => {
   const operationButtons = [
     { onClick: addOperation, text: 'x + y' },
     { onClick: subtractOperation, text: 'x - y' },
-    { onClick: exponentOperation, text: 'x!', disabled: true },
+    { onClick: factorialOperation, text: 'x!', disabled: true },
     { onClick: pow2Operation, text: 'x ^ 2' },
     { onClick: swapInputs, text: 'x <-> y', functional: true },
     { onClick: clearInputs, text: 'очистить', functional: true, remove: true },
@@ -136,12 +164,12 @@ export const Calculator = () => {
     { onClick: answerToY, text: 'ответ -> y', functional: true },
     { onClick: () => console.log('тык'), text: 'буфер -> y', functional: true },
 
-    { onClick: absOperation, text: '|x|', disabled: true },
-    { onClick: () => console.log('тык'), text: 'x > y', disabled: true },
-    { onClick: () => console.log('тык'), text: 'x < y', disabled: true },
-    { onClick: () => console.log('тык'), text: 'x >= 2', disabled: true },
-    { onClick: () => console.log('тык'), text: 'x <= y', disabled: true },
-    { onClick: () => console.log('тык'), text: 'x == y', disabled: true },
+    { onClick: absOperation, text: '|x|' },
+    { onClick: greaterThan, text: 'x > y' },
+    { onClick: lessThan, text: 'x < y' },
+    { onClick: greaterThanOrEqual, text: 'x >= y' },
+    { onClick: lessThanOrEqual, text: 'x <= y' },
+    { onClick: equalTo, text: 'x == y' },
   ];
 
   return (
