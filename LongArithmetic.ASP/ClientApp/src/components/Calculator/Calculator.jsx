@@ -207,6 +207,26 @@ export const Calculator = () => {
     { onClick: equalTo, text: 'x == y' },
   ];
 
+  const digitsCounter = () => {
+    const words = ['число', 'числа', 'чисел'];
+    const number = answer.length;
+    const cases = [2, 0, 1, 1, 1, 2];
+
+    const nounIndex = [
+      number % 100 > 4 && number % 100 < 20
+        ? 2
+        : cases[number % 10 < 5 ? number % 10 : 5],
+    ];
+
+    return (
+      /^(-)?\d+$/.test(answer) && (
+        <p className={styles.digitsCount}>
+          {answer.length} {words[nounIndex]}
+        </p>
+      )
+    );
+  };
+
   return (
     <div className={styles.root}>
       <div className={styles.label}>x =</div>
@@ -236,11 +256,7 @@ export const Calculator = () => {
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
       />
-      {answer && (
-        <p className={styles.digitsCount}>
-          {answer.length} {answer.length === 1 ? 'digit' : 'digits'}
-        </p>
-      )}
+      {digitsCounter()}
     </div>
   );
 };
