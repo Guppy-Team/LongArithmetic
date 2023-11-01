@@ -103,12 +103,12 @@ public class BigNumber
     
     public static bool operator <=(BigNumber left, BigNumber right)
     {
-        return LessThan(left, right) && (left == right);
+        return ((left < right) || (left == right));
     }
     
     public static bool operator >=(BigNumber left, BigNumber right)
     {
-        return GreaterThan(left, right) && (left == right);
+        return ((left > right) || (left == right));
     }
     
     public static bool operator >(BigNumber left, BigNumber right)
@@ -118,7 +118,7 @@ public class BigNumber
     
     public static bool operator ==(BigNumber left, BigNumber right)
     {
-        return (left < right) && (left > right);
+        return !(left > right) && !(left < right);
     }
     
     public static bool operator !=(BigNumber left, BigNumber right)
@@ -322,7 +322,7 @@ public class BigNumber
         BigNumber result = BigNumber.One;
 
         // Пока показатель степени не станет равным нулю
-        while (exponent != BigNumber.Zero)
+        while(exponent.CompareTo(Zero) != 0)
         {
             // Проверяем младший разряд показателя степени
             // Если младший разряд равен 1, умножаем результат на baseValue.

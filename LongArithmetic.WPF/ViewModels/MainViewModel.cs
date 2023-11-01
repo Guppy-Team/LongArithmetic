@@ -18,12 +18,17 @@ public class MainViewModel : BaseViewModel
         CmdMod = new Command(Mod);
         CmdPow = new Command(Pow);
         CmdResultToX = new Command(ResultToX);
-        CmdGeneratePrimeNumber = new Command(GeneratePrimeNumber);
         CmdGcd = new Command(GreatestCommonDivisor);
-        CmdLcm = new Command(LowestCommonMultiple);
+        CmdLcm = new Command(LeastCommonMultiple);
         CmdFactorial = new Command(Factorial);
         CmdResultToY = new Command(ResultToY);
         CmdClear = new Command(Clear);
+        CmdAbs = new Command(Abs);
+        CmdGreaterThan = new Command(GreaterThan);
+        CmdLessThan = new Command(LessThan);
+        CmdGreaterOrEqual = new Command(GreaterOrEqual);
+        CmdLessOrEqual = new Command(LessOrEqual);
+        CmdEqual = new Command(Equal);
     }
     
     // Fields
@@ -179,39 +184,118 @@ public class MainViewModel : BaseViewModel
     {
         (FirstTextBoxText, OutputText) = (OutputText, FirstTextBoxText);
     }
-    private void GeneratePrimeNumber()
-    {
-        OutputText = "Пока не сделано";
-    }
     private void GreatestCommonDivisor()
     {
         BigNumber bigNumber1 = new BigNumber(FirstTextBoxText);
         BigNumber bigNumber2 = new BigNumber(SecondTextBoxText);
-        //BigNumber result = BigNumber.GreatestCommonDivisor(bigNumber1, bigNumber2);
-        //OutputText = result.ToString();
+        BigNumber result = BigNumber.GreatestCommonDivisor(bigNumber1, bigNumber2);
+        OutputText = result.ToString();
     }
-    private void LowestCommonMultiple()
+    private void LeastCommonMultiple()
     {
         BigNumber bigNumber1 = new BigNumber(FirstTextBoxText);
         BigNumber bigNumber2 = new BigNumber(SecondTextBoxText);
-        //BigNumber result = BigNumber.LowestCommonMultiple(bigNumber1, bigNumber2);
-        //OutputText = result.ToString();
+        BigNumber result = BigNumber.LeastCommonMultiple(bigNumber1, bigNumber2);
+        OutputText = result.ToString();
     }
     private void Factorial()
     {
-        //BigNumber bigNumber = new BigNumber(FirstTextBoxText);
-        //BigNumber result = BigNumber.Factorial(bigNumber);
-        //OutputText = result.ToString();
+        BigNumber bigNumber = new BigNumber(FirstTextBoxText);
+        BigNumber result = BigNumber.Factorial(bigNumber);
+        OutputText = result.ToString();
     }
     private void ResultToY()
     {
         (SecondTextBoxText, OutputText) = (OutputText, SecondTextBoxText);
+    }
+    private void Abs()
+    {
+        try
+        {
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber result = BigNumber.Abs(num1);
+            OutputText = result.ToString();
+        }
+        catch (Exception e)
+        {
+            OutputText = "Неверный ввод!";
+        }
     }
     private void Clear()
     {
         FirstTextBoxText = string.Empty;
         SecondTextBoxText = string.Empty;
         OutputText = string.Empty;
+    }
+    private void GreaterThan()
+    {
+        try
+        {
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            bool result = num1 > num2;
+            OutputText = result.ToString();
+        }
+        catch (Exception e)
+        {
+            OutputText = "Неверный ввод!";
+        }
+    }
+    private void LessThan()
+    {
+        try
+        {
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            bool result = num1 < num2;
+            OutputText = result.ToString();
+        }
+        catch (Exception e)
+        {
+            OutputText = "Неверный ввод!";
+        }
+    }
+    private void GreaterOrEqual()
+    {
+        try
+        {
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            bool result = num1 >= num2;
+            OutputText = result.ToString();
+        }
+        catch (Exception e)
+        {
+            OutputText = "Неверный ввод!";
+        }
+    }
+    private void LessOrEqual()
+    {
+        try
+        {
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            bool result = num1 <= num2;
+            OutputText = result.ToString();
+        }
+        catch (Exception e)
+        {
+            OutputText = "Неверный ввод!";
+        }
+    }
+    private void Equal()
+    {
+        try
+        {
+            BigNumber num1 = new(FirstTextBoxText);
+            BigNumber num2 = new(SecondTextBoxText);
+            bool result = num1 == num2;
+            OutputText = result.ToString();
+        }
+        catch (Exception e)
+        {
+            OutputText = "Неверный ввод!";
+        }
     }
     
     #endregion
@@ -230,12 +314,17 @@ public class MainViewModel : BaseViewModel
     public Command CmdMod { get; }
     public Command CmdPow { get; }
     public Command CmdResultToX { get; }
-    public Command CmdGeneratePrimeNumber { get; }
     public Command CmdGcd { get; }
     public Command CmdLcm { get; }
     public Command CmdFactorial { get; }
     public Command CmdResultToY { get; }
     public Command CmdClear { get; }
+    public Command CmdAbs { get; set; }
+    public Command CmdGreaterThan { get; set; }
+    public Command CmdLessThan { get; set; }
+    public Command CmdGreaterOrEqual { get; set; }
+    public Command CmdLessOrEqual { get; set; }
+    public Command CmdEqual { get; set; }
     
     #endregion
 
