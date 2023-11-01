@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import styles from './NavMenu.module.scss';
 
@@ -6,14 +7,14 @@ export const NavMenu = () => {
   return (
     <header className={styles.root}>
       <div className={styles.wrapper}>
-        <a href="" className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           Team Guppy
-        </a>
+        </Link>
 
         <div className={styles.navigation}>
-          <a href="" className={styles.link}>
+          <Link to="/about" className={styles.link}>
             О проекте
-          </a>
+          </Link>
         </div>
       </div>
     </header>
