@@ -36,13 +36,14 @@
         </StackPanel.Resources>
         <Menu>
             <MenuItem Command="{Binding CmdShowHelpWindow}" Header="Справка" />
+            <MenuItem Command="{Binding CmdClear}" Header="Очистить поля" />
         </Menu>
         <Separator />
         <TextBlock
             FontSize="30"
             FontWeight="Bold"
             HorizontalAlignment="Center"
-            Text="Проект 'Большие числа'" />
+            Text="Проект 'Длинная арифметика'" />
         <Label Content="х:" />
         <TextBox Text="{Binding FirstTextBoxText}" />
         <Label Content="у:" />
@@ -54,9 +55,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
-                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
@@ -83,12 +84,8 @@
                 Grid.Row="0" />
             <Button
                 Command="{Binding CmdSwap}"
-                Content="x swap y"
+                Content="x ↔️ y"
                 Grid.Column="4"
-                Grid.Row="0" />
-            <Button
-                Content="nothing"
-                Grid.Column="5"
                 Grid.Row="0" />
             <Button
                 Command="{Binding CmdMultiply}"
@@ -104,8 +101,7 @@
                 Command="{Binding CmdMod}"
                 Content="x % y"
                 Grid.Column="2"
-                Grid.Row="1"
-                IsEnabled="False" />
+                Grid.Row="1" />
             <Button
                 Command="{Binding CmdPow}"
                 Content="x ^ y"
@@ -117,43 +113,55 @@
                 Grid.Column="4"
                 Grid.Row="1" />
             <Button
-                Content="nothing"
-                Grid.Column="5"
-                Grid.Row="1" />
-            <Button
-                Command="{Binding CmdGeneratePrimeNumber}"
-                Content="простое"
-                Grid.Column="0"
-                Grid.Row="2"
-                IsEnabled="False" />
-            <Button
                 Command="{Binding CmdGcd}"
                 Content="НОД"
                 Grid.Column="1"
-                Grid.Row="2"
-                IsEnabled="False" />
+                Grid.Row="2" />
             <Button
                 Command="{Binding CmdLcm}"
                 Content="НОК"
                 Grid.Column="2"
-                Grid.Row="2"
-                IsEnabled="False" />
+                Grid.Row="2" />
             <Button
                 Command="{Binding CmdFactorial}"
                 Content="x!"
                 Grid.Column="3"
-                Grid.Row="2"
-                IsEnabled="False" />
+                Grid.Row="2" />
             <Button
                 Command="{Binding CmdResultToY}"
                 Content="ответ → у"
                 Grid.Column="4"
                 Grid.Row="2" />
             <Button
-                Command="{Binding CmdClear}"
-                Content="Очистить"
-                Grid.Column="5"
+                Command="{Binding CmdAbs}"
+                Content="|x|"
+                Grid.Column="0"
                 Grid.Row="2" />
+            <Button
+                Command="{Binding CmdGreaterThan}"
+                Content="x &gt; y"
+                Grid.Column="0"
+                Grid.Row="3" />
+            <Button
+                Command="{Binding CmdLessThan}"
+                Content="x &lt; y"
+                Grid.Column="1"
+                Grid.Row="3" />
+            <Button
+                Command="{Binding CmdGreaterOrEqual}"
+                Content="x  &gt;= y"
+                Grid.Column="2"
+                Grid.Row="3" />
+            <Button
+                Command="{Binding CmdLessOrEqual}"
+                Content="x &lt;= y"
+                Grid.Column="3"
+                Grid.Row="3" />
+            <Button
+                Command="{Binding CmdEqual}"
+                Content="x == y"
+                Grid.Column="4"
+                Grid.Row="3" />
         </Grid>
         <Label Content="Ответ:" />
         <TextBox Text="{Binding OutputText}" />
