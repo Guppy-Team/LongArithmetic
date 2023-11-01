@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Text;
 
 namespace LongArithmetic.Core;
 
@@ -460,14 +458,14 @@ public class BigNumber
         int result = 0;
 
         // Проходимся по разрядам справа налево
-        for (int i = _digits.Count - 1; i >= 0; i--)
+        for (int i = Digits.Count - 1; i >= 0; i--)
         {
             // Умножаем текущий разряд на 10 в соответствующей степени и прибавляем к результату
-            result = result * 10 + _digits[i];
+            result = result * 10 + Digits[i];
         }
 
         // Если число отрицательное, умножаем результат на -1
-        return _isNegative ? -result : result;
+        return IsNegative ? -result : result;
     }
 
 
