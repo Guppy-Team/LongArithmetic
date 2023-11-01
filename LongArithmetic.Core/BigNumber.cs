@@ -4,26 +4,27 @@ namespace LongArithmetic.Core;
 
 public class BigNumber
 {
-    private List<int> _digits;
-    private readonly bool _isNegative;
+    private List<int> Digits { get; set; }
+    
+    private bool IsNegative { get; }
 
     public static BigNumber Zero => new BigNumber("0");
     public static BigNumber One => new BigNumber("1");
 
     public int Length
     {
-        get => _digits.Count;
+        get => Digits.Count;
     }
     
     public int this[int index]
     {
         get
         {
-            if (index < 0 || index >= _digits.Count)
+            if (index < 0 || index >= Digits.Count)
             {
                 throw new IndexOutOfRangeException();
             }
-            return _digits[index];
+            return Digits[index];
         }
     }
 
@@ -31,20 +32,20 @@ public class BigNumber
     {
         if (string.IsNullOrEmpty(value))
         {
-            _digits = new List<int> { 0 };
-            _isNegative = false;
+            Digits = new List<int> { 0 };
+            IsNegative = false;
         }
         else
         {
-            _isNegative = value[0] == '-';
-            int startIndex = _isNegative ? 1 : 0;
+            IsNegative = value[0] == '-';
+            int startIndex = IsNegative ? 1 : 0;
 
-            _digits = new List<int>();
+            Digits = new List<int>();
             for (int i = value.Length - 1; i >= startIndex; i--)
             {
                 if (char.IsDigit(value[i]))
                 {
-                    _digits.Add(int.Parse(value[i].ToString()));
+                    Digits.Add(int.Parse(value[i].ToString()));
                 }
                 else
                 {
@@ -56,40 +57,38 @@ public class BigNumber
 
     private BigNumber(List<int> digits, bool isNegative)
     {
-        _digits = digits;
-        _isNegative = !digits.SequenceEqual(new List<int>(0)) && isNegative;
+        Digits = digits;
+        this.IsNegative = !digits.SequenceEqual(new List<int>(0)) && isNegative;
+        
         RemoveLeadingZeros();
+        
+        if(Digits.Count == 1 && Digits[0] == 0)
+            this.IsNegative = false;
     }
 
     private BigNumber()
     {
-        _digits = new List<int> { 0 };
-        _isNegative = false;
+        Digits = new List<int> { 0 };
+        IsNegative = false;
     }
 
     #region Операторы
 
     public static BigNumber operator +(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        int result = l + r;
-        return new BigNumber(result.ToString());
+        return Add(left, right);
     }
     
     public static BigNumber operator +(BigNumber left, int right)
     {
-        int l = (int) left;
-        int result = l + right;
+        BigNumber r = new BigNumber(right.ToString());
+        BigNumber result = left + r;
         return new BigNumber(result.ToString());
     }
 
     public static BigNumber operator -(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        int result = l - r;
-        return new BigNumber(result.ToString());
+        return Subtract(left, right);
     }
 
     public static BigNumber operator *(BigNumber left, BigNumber right)
@@ -104,16 +103,12 @@ public class BigNumber
     
     public static bool operator <=(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        return l <= r;
+        return LessThan(left, right) && (left == right);
     }
     
     public static bool operator >=(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        return l >= r;
+        return GreaterThan(left, right) && (left == right);
     }
     
     public static bool operator >(BigNumber left, BigNumber right)
@@ -123,27 +118,18 @@ public class BigNumber
     
     public static bool operator ==(BigNumber left, BigNumber right)
     {
-        if (BigNumber.GreaterThan(left, right))
-            return false;
-        if (BigNumber.LessThan(left, right))
-            return false;
-
-        return true;
+        return (left < right) && (left > right);
     }
     
     public static bool operator !=(BigNumber left, BigNumber right)
     {
-        int l = (int) left;
-        int r = (int) right;
-        return l != r;
+        return !(left == right);
     }
     
     public static bool operator <(BigNumber left, BigNumber right)
     {
         return LessThan(left, right);
     }
-
-    // Остальные перегрузки сюда
 
     #endregion
 
@@ -170,7 +156,7 @@ public class BigNumber
         // Одно из чисел равно 0
         if (left.IsZero() || right.IsZero())
         {
-            return BigNumber.Zero;
+            return Zero;
         }
         
         int resultLength = left.Length + right.Length;
@@ -197,7 +183,7 @@ public class BigNumber
             }
         }
 
-        bool isNegative = left._isNegative != right._isNegative;
+        bool isNegative = left.IsNegative != right.IsNegative;
 
         return new BigNumber(result, isNegative);
     }
@@ -209,77 +195,97 @@ public class BigNumber
     /// <param name="dividend">Делимое.</param>
     /// <param name="divisor">Делитель.</param>
     /// <returns>Результат деления.</returns>
-    private static BigNumber Divide(BigNumber dividend, BigNumber divisor)
+    public static BigNumber Divide(BigNumber left, BigNumber right)
     {
-        //! TODO Потом убрать
-        // При целочисленном делении вернуть ноль
-        if (divisor > dividend)
+        if (right.CompareTo(BigNumber.Zero) == 0)
         {
-            return BigNumber.Zero;
+            throw new DivideByZeroException();
         }
 
-        if (dividend == BigNumber.Zero)
+        if (left.IsNegative && !right.IsNegative)
         {
-            return BigNumber.Zero;
+            return Divide(left.Negate(), right).Negate();
         }
-        
-        // Если числа равны вернуть единицу
-        if (divisor == dividend)
+        else if (!left.IsNegative && right.IsNegative)
         {
-            return BigNumber.One;
+            return Divide(left, right.Negate()).Negate();
+        }
+        else if (left.IsNegative && right.IsNegative)
+        {
+            return Divide(left.Negate(), right.Negate());
         }
 
-        // Получаем знак
-        bool isNegative = divisor._isNegative != dividend._isNegative;
-        
-        // Делаем оба числа положительными
-        dividend = BigNumber.Abs(dividend);
-        divisor = BigNumber.Abs(divisor);
+        BigNumber quotient = BigNumber.Zero;
+        BigNumber remainder = BigNumber.Zero;
 
-        // Инициализация листа с частным
-        List<int> quotient = new List<int>();
-        
-        // Индекс для слежения где в процессе деления мы находимся
-        int divisionIndex = dividend.Length - 1;
-        
-        // Процесс деления
-        while (divisionIndex >= 0)
+        for (int i = left.Digits.Count - 1; i >= 0; i--)
         {
+            remainder = remainder.MultiplyBy10();
+            remainder = Add(remainder, new BigNumber(left.Digits[i].ToString()));
+
             int digit = 0;
-            // Временное делимое
-            int tempDividend = dividend[divisionIndex];
 
-            if (tempDividend == 0)
+            while (remainder.CompareTo(right) >= 0)
             {
-                quotient.Insert(0, digit);
-                divisionIndex--;
-                continue;
-            }
-            
-            int exponent = 10;
-            
-            // Если временное делимое меньше делителя, то добавляем следующий раздряд
-            // Например 12 / 4 => 1 < 4 => добавляем десятки => 12 / 4
-            while (tempDividend < divisor)
-            {
-                tempDividend *= exponent;
-                exponent *= 10;
-                divisionIndex--;
-                tempDividend += dividend[divisionIndex];
-            }
-
-            while (tempDividend >= divisor)
-            {
-                tempDividend -= (int)divisor;
+                remainder = Subtract(remainder, right);
                 digit++;
             }
-            
-            quotient.Insert(0, digit);
-            
-            divisionIndex--;
+
+            quotient = quotient.MultiplyBy10();
+            quotient = Add(quotient, new BigNumber(digit.ToString()));
         }
-        
-        return new BigNumber(quotient, isNegative);
+
+        return quotient;
+    }
+    
+    /// <summary>
+    /// Сравнивает два числа типа BigNumber.
+    /// </summary>
+    /// <param name="other">Число, с которым сравнить.</param>
+    /// <returns>
+    /// Возвращает -1 если первое число меньше, 1 если первое число больше, и 0, если они равны
+    /// </returns>
+    public int CompareTo(BigNumber other)
+    {
+        if (this.IsNegative && !other.IsNegative)
+        {
+            return -1;
+        }
+
+        if (!this.IsNegative && other.IsNegative)
+        {
+            return 1;
+        }
+
+        int maxLength = Math.Max(this.Digits.Count, other.Digits.Count);
+
+        for (int i = maxLength - 1; i >= 0; i--)
+        {
+            int digit1 = i < this.Digits.Count ? this.Digits[i] : 0;
+            int digit2 = i < other.Digits.Count ? other.Digits[i] : 0;
+
+            if (digit1 < digit2)
+                return -1;
+
+            if (digit1 > digit2)
+                return 1;
+        }
+
+        return 0;
+    }
+    
+    private BigNumber MultiplyBy10()
+    {
+        var ten = new BigNumber(new List<int>
+        {
+            0, 1
+        }, false);
+        return Multiply(this, ten);
+    }
+    
+    public BigNumber Negate()
+    {
+        return new BigNumber(Digits, !IsNegative);
     }
 
     public static BigNumber Mod(BigNumber dividend, BigNumber divisor)
@@ -322,17 +328,10 @@ public class BigNumber
         return result;
     }
 
-    // реализуем после всего основного
-    // public static BigNumber GeneratePrimeNumber(int bitLength)
-    // {
-    //     throw new NotImplementedException();
-    // }
-
     #endregion
 
     #region Сравнение
 
-    // Работоспособность не проверял
     /// <summary>
     /// Метод сравнивающий два числа
     /// Возвращает true, если число left больше right
@@ -346,29 +345,28 @@ public class BigNumber
     public static bool GreaterThan(BigNumber left, BigNumber right)
     {
         // Если left отрицательное, а right неотрицательное, то left всегда меньше.
-        if (left._isNegative && !right._isNegative) return false;
+        if (left.IsNegative && !right.IsNegative) return false;
         // Если left неотрицательное, а right отрицательное, то left всегда больше.
-        if (!left._isNegative && right._isNegative) return true;
+        if (!left.IsNegative && right.IsNegative) return true;
 
         // Если left имеет больше цифр, чем right, то left всегда больше.
-        if (left._digits.Count > right._digits.Count) return true;
+        if (left.Digits.Count > right.Digits.Count) return true;
         // Если right имеет больше цифр, чем left, то left всегда меньше.
-        if (left._digits.Count < right._digits.Count) return false;
+        if (left.Digits.Count < right.Digits.Count) return false;
 
         // Если количество цифр одинаковое, сравниваем числа посимвольно, начиная с самых старших разрядов.
-        for (int i = left._digits.Count - 1; i >= 0; i--)
+        for (int i = left.Digits.Count - 1; i >= 0; i--)
         {
             // Если очередная цифра left больше соответствующей цифры right, то left больше.
-            if (left._digits[i] > right._digits[i]) return true;
+            if (left.Digits[i] > right.Digits[i]) return true;
             // Если очередная цифра left меньше соответствующей цифры right, то left меньше.
-            if (left._digits[i] < right._digits[i]) return false;
+            if (left.Digits[i] < right.Digits[i]) return false;
         }
 
         // Если все цифры одинаковы, то числа равны.
         return false;
     }
 
-    // Работоспособность не проверял
     /// <summary>
     /// Метод сравнивающий два числа
     /// Возвращает true, если число left меньше right
@@ -382,31 +380,26 @@ public class BigNumber
     public static bool LessThan(BigNumber left, BigNumber right)
     {
         // Если left отрицательное, а right неотрицательное, то left всегда меньше.
-        if (left._isNegative && !right._isNegative) return true;
+        if (left.IsNegative && !right.IsNegative) return true;
         // Если left неотрицательное, а right отрицательное, то left всегда больше.
-        if (!left._isNegative && right._isNegative) return false;
+        if (!left.IsNegative && right.IsNegative) return false;
 
         // Если left имеет больше цифр, чем right, то left всегда больше.
-        if (left._digits.Count > right._digits.Count) return false;
+        if (left.Digits.Count > right.Digits.Count) return false;
         // Если right имеет больше цифр, чем left, то left всегда меньше.
-        if (left._digits.Count < right._digits.Count) return true;
+        if (left.Digits.Count < right.Digits.Count) return true;
 
         // Если количество цифр одинаковое, сравниваем числа посимвольно, начиная с самых старших разрядов.
-        for (int i = left._digits.Count - 1; i >= 0; i--)
+        for (int i = left.Digits.Count - 1; i >= 0; i--)
         {
             // Если очередная цифра left больше соответствующей цифры right, то left больше.
-            if (left._digits[i] > right._digits[i]) return false;
+            if (left.Digits[i] > right.Digits[i]) return false;
             // Если очередная цифра left меньше соответствующей цифры right, то left меньше.
-            if (left._digits[i] < right._digits[i]) return true;
+            if (left.Digits[i] < right.Digits[i]) return true;
         }
 
         // Если все цифры одинаковы, то числа равны.
         return false;
-    }
-
-    public static bool EqualTo(BigNumber left, BigNumber right)
-    {
-        throw new NotImplementedException();
     }
 
     // Работоспособность не проверял 
@@ -420,7 +413,7 @@ public class BigNumber
     public static BigNumber Abs(BigNumber num)
     {
         // Создаем копию списка цифр, чтобы не изменять исходное число
-        List<int> absDigits = new List<int>(num._digits);
+        List<int> absDigits = new List<int>(num.Digits);
 
         // Создаем новый объект BigNumber с абсолютным значением
         return new BigNumber(absDigits, false);
@@ -460,7 +453,7 @@ public class BigNumber
     /// <returns>Булево значение.</returns>
     private bool IsZero()
     {
-        return _digits.ToString()!.Trim('-') == "0";
+        return Digits.ToString()!.Trim('-') == "0";
     }
     
     /// <summary>
@@ -471,20 +464,20 @@ public class BigNumber
         int firstNonZeroIndex = 0;
 
         // Находим индекс первого ненулевого элемента
-        while (firstNonZeroIndex < _digits.Count && _digits[Length - 1 - firstNonZeroIndex] == 0)
+        while (firstNonZeroIndex < Digits.Count && Digits[Length - 1 - firstNonZeroIndex] == 0)
         {
             firstNonZeroIndex++;
         }
 
         // Если все цифры равны нулю, то оставить один ноль
-        if (firstNonZeroIndex == _digits.Count)
+        if (firstNonZeroIndex == Digits.Count)
         {
-            _digits = new List<int> { 0 };
+            Digits = new List<int> { 0 };
         }
         else
         {
             // Новый лист чисел, уже без ведущих нулей
-            _digits = _digits.GetRange(0, _digits.Count - firstNonZeroIndex);
+            Digits = Digits.GetRange(0, Digits.Count - firstNonZeroIndex);
         }
     }
     
@@ -496,12 +489,12 @@ public class BigNumber
     {
         var sb = new StringBuilder();
         
-        if (_isNegative)
+        if (IsNegative)
             sb.Append('-');
 
         for (int i = Length - 1; i >= 0; i--)
         {
-            sb.Append(_digits[i]);
+            sb.Append(Digits[i]);
         }
 
         return sb.ToString();
