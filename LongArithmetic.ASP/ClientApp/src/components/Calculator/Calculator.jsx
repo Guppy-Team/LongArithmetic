@@ -9,23 +9,22 @@ export const Calculator = () => {
   const [inputY, setInputY] = useState('0');
   const [answer, setAnswer] = useState('');
 
+  const isDigitsValue = (value) => {
+    return /^(-)?\d+/.test(value);
+  };
+
   const handleInputChange = (e, setState) => {
-    let value = e.target.value;
-    value = processInputValue(value);
+    const value = processInputValue(e.target.value);
     setState(value);
   };
 
   const handleClipboardPaste = (setState) => {
     navigator.clipboard.readText().then((value) => {
-      if (containsNumericValue(value)) {
+      if (isDigitsValue(value)) {
         value = processInputValue(value);
         setState(value);
       }
     });
-  };
-
-  const containsNumericValue = (value) => {
-    return /\d/.test(value);
   };
 
   const processInputValue = (value) => {
@@ -34,6 +33,7 @@ export const Calculator = () => {
     } else {
       value = value.replace(/-/g, '');
     }
+
     value = value.replace(/[^\d-]/g, '');
     return value;
   };
@@ -52,136 +52,42 @@ export const Calculator = () => {
       });
 
       const data = await response.json();
+      const answer = determineAnswer(operationName, data.result);
 
-      if (typeof data.result === 'boolean') {
-        if (operationName === 'greaterthan') {
-          setAnswer(data.result ? `Да, X больше Y` : `Нет, X не больше Y`);
-        } else if (operationName === 'lessthan') {
-          setAnswer(data.result ? `Да, X меньше Y` : `Нет, X не меньше Y`);
-        } else if (operationName === 'greaterthanorequalto') {
-          setAnswer(
-            data.result
-              ? `Да, X больше или равно Y`
-              : `Нет, X не больше или равно Y`,
-          );
-        } else if (operationName === 'lessthanorequalto') {
-          setAnswer(
-            data.result
-              ? `Да, X меньше или равно Y`
-              : `Нет, X не меньше или равно Y`,
-          );
-        } else if (operationName === 'equalto') {
-          setAnswer(data.result ? `Да, X равно Y` : `Нет, X не равно Y`);
-        }
-      } else {
-        setAnswer(data.result);
-      }
+      setAnswer(answer);
     } catch (error) {
       console.error('ОШИБКА:', error);
     }
   };
 
-  const addOperation = () => {
-    performOperation('add');
-  };
+  const determineAnswer = (operationName, value) => {
+    switch (operationName.toLowerCase()) {
+      case 'greaterthan':
+        return value ? 'Да, X больше Y' : 'Нет, X не больше Y';
+      case 'lessthan':
+        return value ? 'Да, X меньше Y' : 'Нет, X не меньше Y';
+      case 'greaterthanorequalto':
+        return value
+          ? 'Да, X больше или равно Y'
+          : 'Нет, X не больше или равно Y';
+      case 'lessthanorequalto':
+        return value
+          ? 'Да, X меньше или равно Y'
+          : 'Нет, X не меньше или равно Y';
+      case 'equalto':
+        return value ? 'Да, X равно Y' : 'Нет, X не равно Y';
 
-  const subtractOperation = () => {
-    performOperation('subtract');
-  };
-
-  const multiplyOperation = () => {
-    performOperation('multiply');
-  };
-
-  const divideOperation = () => {
-    if (parseInt(inputY) === 0) {
-      alert('Нельзя делить на ноль.');
-    } else {
-      performOperation('divide');
+      default:
+        return value;
     }
-  };
-
-  const powOperation = () => {
-    if (parseInt(inputX) === 0) {
-      alert('Нельзя возвести нуль в степень.');
-    } else {
-      performOperation('pow');
-    }
-  };
-
-  const pow2Operation = () => {
-    if (parseInt(inputX) === 0) {
-      alert('Нельзя возвести нуль в квадрат.');
-    } else {
-      performOperation('pow', { x: inputX, y: '2' });
-    }
-  };
-
-  const pow3Operation = () => {
-    if (parseInt(inputX) === 0) {
-      alert('Нельзя возвести нуль в куб.');
-    } else {
-      performOperation('pow', { x: inputX, y: '3' });
-    }
-  };
-
-  const factorialOperation = () => {
-    performOperation('factorial');
-  };
-
-  const modOperation = () => {
-    performOperation('mod');
-  };
-
-  const gcdOperation = () => {
-    performOperation('gcd');
-  };
-
-  const lcmOperation = () => {
-    performOperation('lcm');
-  };
-
-  const isPrime = () => {
-    performOperation('isprime', { x: inputX });
-  };
-
-  const absOperation = () => {
-    performOperation('abs', { x: inputX });
-  };
-
-  const greaterThan = () => {
-    performOperation('greaterthan');
-  };
-
-  const lessThan = () => {
-    performOperation('lessthan');
-  };
-
-  const greaterThanOrEqualTo = () => {
-    performOperation('greaterthanorequalto');
-  };
-
-  const lessThanOrEqualTo = () => {
-    performOperation('lessthanorequalto');
-  };
-
-  const equalTo = () => {
-    performOperation('equalto');
   };
 
   const answerToInput = (setState) => {
-    const regex = /^(-)?\d+/;
+    const value = isDigitsValue(answer) ? answer : '0';
 
-    if (answer === '') {
-      setState('0');
-    } else if (regex.test(answer)) {
-      setState(answer);
-    } else {
-      setState('0');
-    }
+    setState(value);
   };
 
-  // Примените эти функции к inputX и inputY
   const answerToX = () => {
     answerToInput(setInputX);
   };
@@ -201,18 +107,69 @@ export const Calculator = () => {
     setAnswer('');
   };
 
+  const operations = {
+    add: () => performOperation('add'),
+    subtract: () => performOperation('subtract'),
+    multiply: () => performOperation('multiply'),
+    divide: () => {
+      if (parseInt(inputY) === 0) {
+        alert('Нельзя делить на ноль.');
+      } else {
+        performOperation('divide');
+      }
+    },
+    mod: () => {
+      if (parseInt(inputY) === 0) {
+        alert('Нельзя делить на ноль.');
+      } else {
+        performOperation('mod');
+      }
+    },
+    factorial: () => performOperation('factorial'),
+    pow: () => {
+      if (parseInt(inputX) === 0) {
+        alert('Нельзя возвести нуль в степень.');
+      } else {
+        performOperation('pow');
+      }
+    },
+    pow2: () => {
+      if (parseInt(inputX) === 0) {
+        alert('Нельзя возвести нуль в квадрат.');
+      } else {
+        performOperation('pow', { x: inputX, y: '2' });
+      }
+    },
+    pow3: () => {
+      if (parseInt(inputX) === 0) {
+        alert('Нельзя возвести нуль в куб.');
+      } else {
+        performOperation('pow', { x: inputX, y: '3' });
+      }
+    },
+    abs: () => performOperation('abs'),
+    greaterThan: () => performOperation('greaterthan'),
+    lessThan: () => performOperation('lessthan'),
+    greaterThanOrEqualTo: () => performOperation('greaterthanorequalto'),
+    lessThanOrEqualTo: () => performOperation('lessthanorequalto'),
+    equalTo: () => performOperation('equalto'),
+    isPrime: () => performOperation('isprime'),
+    gcd: () => performOperation('gcd'),
+    lcm: () => performOperation('lcm'),
+  };
+
   const operationButtons = [
-    { onClick: addOperation, text: 'x + y' },
-    { onClick: subtractOperation, text: 'x - y' },
-    { onClick: factorialOperation, text: 'x!', disabled: true },
-    { onClick: pow2Operation, text: 'x ^ 2' },
+    { onClick: operations.add, text: 'x + y' },
+    { onClick: operations.subtract, text: 'x - y' },
+    { onClick: operations.factorial, text: 'x!', disabled: true },
+    { onClick: operations.pow2, text: 'x ^ 2' },
     { onClick: swapInputs, text: 'x <-> y', functional: true },
     { onClick: clearInputs, text: 'очистить', functional: true, remove: true },
 
-    { onClick: multiplyOperation, text: 'x * y' },
-    { onClick: divideOperation, text: 'x / y' },
-    { onClick: modOperation, text: 'mod', disabled: true },
-    { onClick: pow3Operation, text: 'x ^ 3' },
+    { onClick: operations.multiply, text: 'x * y' },
+    { onClick: operations.divide, text: 'x / y' },
+    { onClick: operations.mod, text: 'mod', disabled: true },
+    { onClick: operations.pow3, text: 'x ^ 3' },
     { onClick: answerToX, text: 'ответ -> x', functional: true },
     {
       onClick: () => handleClipboardPaste(setInputX),
@@ -220,10 +177,10 @@ export const Calculator = () => {
       functional: true,
     },
 
-    { onClick: isPrime, text: 'простое?', disabled: true },
-    { onClick: gcdOperation, text: 'НОД', disabled: true },
-    { onClick: lcmOperation, text: 'НОК', disabled: true },
-    { onClick: powOperation, text: 'x ^ y' },
+    { onClick: operations.isPrime, text: 'простое?', disabled: true },
+    { onClick: operations.gcd, text: 'НОД', disabled: true },
+    { onClick: operations.lcm, text: 'НОК', disabled: true },
+    { onClick: operations.pow, text: 'x ^ y' },
     { onClick: answerToY, text: 'ответ -> y', functional: true },
     {
       onClick: () => handleClipboardPaste(setInputY),
@@ -231,12 +188,12 @@ export const Calculator = () => {
       functional: true,
     },
 
-    { onClick: absOperation, text: '|x|' },
-    { onClick: greaterThan, text: 'x > y' },
-    { onClick: lessThan, text: 'x < y' },
-    { onClick: greaterThanOrEqualTo, text: 'x >= y' },
-    { onClick: lessThanOrEqualTo, text: 'x <= y' },
-    { onClick: equalTo, text: 'x == y' },
+    { onClick: operations.abs, text: '|x|' },
+    { onClick: operations.greaterThan, text: 'x > y' },
+    { onClick: operations.lessThan, text: 'x < y' },
+    { onClick: operations.greaterThanOrEqualTo, text: 'x >= y' },
+    { onClick: operations.lessThanOrEqualTo, text: 'x <= y' },
+    { onClick: operations.equalTo, text: 'x == y' },
   ];
 
   const digitsCounter = () => {
@@ -255,7 +212,7 @@ export const Calculator = () => {
     ];
 
     return (
-      /^(-)?\d+$/.test(answer) && (
+      isDigitsValue(answer) && (
         <p className={styles.digitsCount}>
           {adjustedLength} {words[nounIndex]}
         </p>
