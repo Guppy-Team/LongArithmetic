@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Data;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace LongArithmetic.Core;
 
@@ -274,9 +276,19 @@ public class BigNumber
         return new BigNumber(quotient, isNegative);
     }
 
+    /// <summary>
+    /// Вычисляет остаток от деления данного числа на указанное число
+    /// </summary>
+    /// <param name="dividend"></param>
+    /// <param name="divisor"></param>
+    /// <returns>Остаток от деления</returns>
     public static BigNumber Mod(BigNumber dividend, BigNumber divisor)
     {
-        throw new NotImplementedException();
+        //Находим частное от деления
+        BigNumber quotient = dividend / divisor;
+
+        //Возвращаем остаток
+        return dividend - (divisor * quotient);
     }
 
     // Работоспособность не проверял
@@ -418,19 +430,45 @@ public class BigNumber
         return new BigNumber(absDigits, false);
     }
 
-    public static BigNumber GreatestCommonDivisor(BigNumber num)
+    public static BigNumber GreatestCommonDivisor(BigNumber dividend, BigNumber divisor)
     {
-        throw new NotImplementedException();
+        while (divisor != 0)
+        {
+            //Схраняем делитель во временной переменной
+            BigNumber temp = divisor; 
+            //Находим остаток от деления
+            divisor = BigNumber.Mod(dividend, divisor);
+            //Заменяем делимое делителем
+            dividend = temp;
+        }
+
+        return dividend;
     }
 
     #endregion
 
     #region Преобразования
 
+    /// <summary>
+    /// Преобразует текущий объект BigNumber в его целочисленное представление
+    /// </summary>
+    /// <returns>Целочисленное значение, соответствующее текущему объекту BigNumber</returns>
     public int ConvertToInt()
     {
-        throw new NotImplementedException();
+        // Инициализируем результат нулем
+        int result = 0;
+
+        // Проходимся по разрядам справа налево
+        for (int i = _digits.Count - 1; i >= 0; i--)
+        {
+            // Умножаем текущий разряд на 10 в соответствующей степени и прибавляем к результату
+            result = result * 10 + _digits[i];
+        }
+
+        // Если число отрицательное, умножаем результат на -1
+        return _isNegative ? -result : result;
     }
+
 
     public static implicit operator BigNumber(int value)
     {
