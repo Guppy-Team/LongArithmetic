@@ -456,6 +456,25 @@ public class BigNumber
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Вычисляет наименьшее общее кратное (НОК) для двух чисел типа BigNumber.
+    /// </summary>
+    /// <param name="num1">Первое число.</param>
+    /// <param name="num2">Второе число.</param>
+    /// <returns>Наименьшее общее кратное (НОК) чисел num1 и num2.</returns>
+    /// <remarks>
+    /// НОК двух чисел - это наименьшее положительное число, которое делится без остатка и на num1, и на num2.
+    /// Метод использует вычисление НОД (наибольшего общего делителя) для определения НОК.
+    /// </remarks>
+    public static BigNumber LeastCommonMultiple(BigNumber num1, BigNumber num2)
+    {
+        if (num1 == Zero || num2 == Zero)
+            return Zero; // НОК нуля с любым числом равен нулю
+
+        BigNumber gcd = GreatestCommonDivisor(num1, num2);
+        return (num1 * num2) / gcd;
+    }
+
     #endregion
 
     #region Преобразования
