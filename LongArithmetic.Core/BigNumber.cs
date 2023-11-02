@@ -441,7 +441,7 @@ public class BigNumber
             dividend = temp;
         }
 
-        return dividend;
+        return Abs(dividend);
     }
 
     #endregion

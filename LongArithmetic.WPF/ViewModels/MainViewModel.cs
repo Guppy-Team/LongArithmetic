@@ -114,6 +114,11 @@ public class MainViewModel : BaseViewModel
         {
             BigNumber num1 = new(FirstTextBoxText);
             BigNumber num2 = new(SecondTextBoxText);
+            if (num2.CompareTo(BigNumber.Zero) == 0)
+            {
+                OutputText = "Нельзя делить на ноль!";
+                return;
+            }
             BigNumber result = num1 / num2;
             OutputText = result.ToString(); 
         }
