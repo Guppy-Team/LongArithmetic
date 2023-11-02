@@ -1,5 +1,5 @@
 .root {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	height: 30px;
@@ -12,15 +12,19 @@
 	line-height: normal;
 	border: 1px solid #121629;
 	border-radius: 8px;
-	background: #F5F5F5;
+	background-color: #F5F5F5;
 	box-shadow: 1px 2px 0px 0px rgba(0, 0, 0, 0.20);
 	transition: all 0.3s ease 0s;
 	cursor: pointer;
 
-	&:active {
+	&:active:not(:disabled) {
 		transform: translateY(1px);
 		box-shadow: unset;
 		outline: none;
+	}
+
+	&:hover:not(:disabled):not(.functional) {
+		background-color: #e5e5e5;
 	}
 
 	&:disabled {
@@ -32,6 +36,10 @@
 
 .functional {
 	background-color: #B3C8FF;
+
+	&:hover {
+		background-color: #c3d4ff;
+	}
 }
 
 .remove {

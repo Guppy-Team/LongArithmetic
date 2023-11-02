@@ -1,0 +1,42 @@
+.title {
+	font-size: 36px;
+	margin-bottom: 10px;
+}
+
+.subtitle {
+	margin-top: 30px;
+
+	code {
+		color: #4048FF;
+		font-weight: 700;
+	}
+}
+
+ul {
+	padding-left: 15px;
+}
+
+.subtitleHeader {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.explanationBlock {
+	margin-top: 30px;
+}
+
+.explanation {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 10px;
+}
+
+.descr {
+	display: block;
+	margin-bottom: 10px;
+
+	span {
+		display: inline-block;
+		margin-left: 10px;
+	}
+}
