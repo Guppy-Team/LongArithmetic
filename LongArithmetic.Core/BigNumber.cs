@@ -15,7 +15,7 @@ public class BigNumber
     {
         get => Digits.Count;
     }
-    
+
     public int this[int index]
     {
         get
@@ -24,6 +24,7 @@ public class BigNumber
             {
                 throw new IndexOutOfRangeException();
             }
+
             return Digits[index];
         }
     }
@@ -76,18 +77,22 @@ public class BigNumber
 
     public static BigNumber operator +(BigNumber left, BigNumber right)
     {
+
         return Add(left, right);
     }
-    
+
     public static BigNumber operator +(BigNumber left, int right)
     {
+
         BigNumber r = new BigNumber(right.ToString());
         BigNumber result = left + r;
+      
         return new BigNumber(result.ToString());
     }
 
     public static BigNumber operator -(BigNumber left, BigNumber right)
     {
+
         return Subtract(left, right);
     }
 
@@ -100,32 +105,35 @@ public class BigNumber
     {
         return Divide(left, right);
     }
-    
+
     public static bool operator <=(BigNumber left, BigNumber right)
     {
+
         return ((left < right) || (left == right));
     }
-    
+
     public static bool operator >=(BigNumber left, BigNumber right)
     {
+
         return ((left > right) || (left == right));
     }
-    
+
     public static bool operator >(BigNumber left, BigNumber right)
     {
         return GreaterThan(left, right);
     }
-    
+
     public static bool operator ==(BigNumber left, BigNumber right)
     {
         return !(left > right) && !(left < right);
     }
-    
+
     public static bool operator !=(BigNumber left, BigNumber right)
     {
+
         return !(left == right);
     }
-    
+
     public static bool operator <(BigNumber left, BigNumber right)
     {
         return LessThan(left, right);
@@ -146,7 +154,7 @@ public class BigNumber
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="left">Первое число.</param>
     /// <param name="right">Второе число.</param>
@@ -158,7 +166,7 @@ public class BigNumber
         {
             return Zero;
         }
-        
+
         int resultLength = left.Length + right.Length;
         List<int> result = new List<int>(resultLength);
 
@@ -177,6 +185,7 @@ public class BigNumber
                 carry = product / 10;
                 result[i + j] = product % 10;
             }
+
             if (carry > 0)
             {
                 result[i + right.Length] += carry;
@@ -188,7 +197,7 @@ public class BigNumber
         return new BigNumber(result, isNegative);
     }
 
-    
+
     /// <summary>
     /// Делит одно значение BigNumber на другое и возвращает результат.
     /// </summary>
@@ -307,15 +316,15 @@ public class BigNumber
     /// <summary>
     /// Метод возводящий одно число в степень другого
     /// </summary>
-    /// 
+    ///
     /// <param name="baseValue">Число</param>
     /// <param name="exponent">Степень</param>
-    /// 
+    ///
     /// <returns>Число, возведенное в степень</returns>
     public static BigNumber Pow(BigNumber baseValue, BigNumber exponent)
     {
         // Если показатель степени равен 0, результат всегда равен 1.
-        if (exponent == BigNumber.Zero) 
+        if (exponent == BigNumber.Zero)
             return BigNumber.One;
 
         // Инициализация результата и нуля.
@@ -338,6 +347,34 @@ public class BigNumber
         return result;
     }
 
+    /// <summary>
+    /// Вычисляет факториал числа n.
+    /// </summary>
+    /// <param name="n">Число, для которого вычисляется факториал.</param>
+    /// <returns>Объект BigNumber, представляющий факториал числа n.</returns>
+    /// <exception cref="ArgumentException">Выбрасывается, если n отрицательное.</exception>
+    public static BigNumber Factorial(BigNumber n)
+    {
+        if (n == Zero || n == One)
+            return One;
+
+        BigNumber result = One;
+        BigNumber i = n;
+
+        while (i > One)
+        {
+            result *= i;
+            i -= One;
+        }
+
+        return result;
+    }
+
+    // реализуем после всего основного
+    // public static BigNumber GeneratePrimeNumber(int bitLength)
+    // {
+    //     throw new NotImplementedException();
+    // }
     #endregion
 
     #region Сравнение
@@ -347,10 +384,10 @@ public class BigNumber
     /// Возвращает true, если число left больше right
     /// Возвращает false, если число left меньше или равно right
     /// </summary>
-    /// 
+    ///
     /// <param name="left">Первое число</param>
     /// <param name="right">Второе число</param>
-    /// 
+    ///
     /// <returns> true/false </returns>
     public static bool GreaterThan(BigNumber left, BigNumber right)
     {
@@ -382,10 +419,10 @@ public class BigNumber
     /// Возвращает true, если число left меньше right
     /// Возвращает false, если число left больше или равно right
     /// </summary>
-    /// 
+    ///
     /// <param name="left">Первое число</param>
     /// <param name="right">Второе число</param>
-    /// 
+    ///
     /// <returns> true/false </returns>
     public static bool LessThan(BigNumber left, BigNumber right)
     {
@@ -412,13 +449,12 @@ public class BigNumber
         return false;
     }
 
-    // Работоспособность не проверял 
     /// <summary>
     /// Метод определяющий модуль числа
     /// </summary>
-    /// 
+    ///
     /// <param name="num">Число</param>
-    /// 
+    ///
     /// <returns>Модуль числа</returns>
     public static BigNumber Abs(BigNumber num)
     {
@@ -442,6 +478,25 @@ public class BigNumber
         }
 
         return Abs(dividend);
+    }
+
+    /// <summary>
+    /// Вычисляет наименьшее общее кратное (НОК) для двух чисел типа BigNumber.
+    /// </summary>
+    /// <param name="num1">Первое число.</param>
+    /// <param name="num2">Второе число.</param>
+    /// <returns>Наименьшее общее кратное (НОК) чисел num1 и num2.</returns>
+    /// <remarks>
+    /// НОК двух чисел - это наименьшее положительное число, которое делится без остатка и на num1, и на num2.
+    /// Метод использует вычисление НОД (наибольшего общего делителя) для определения НОК.
+    /// </remarks>
+    public static BigNumber LeastCommonMultiple(BigNumber num1, BigNumber num2)
+    {
+        if (num1 == Zero || num2 == Zero)
+            return Zero; // НОК нуля с любым числом равен нулю
+
+        BigNumber gcd = GreatestCommonDivisor(num1, num2);
+        return (num1 * num2) / gcd;
     }
 
     #endregion
@@ -491,7 +546,7 @@ public class BigNumber
     {
         return Digits.ToString()!.Trim('-') == "0";
     }
-    
+
     /// <summary>
     /// Удаляет ведущие нули.
     /// </summary>
@@ -516,7 +571,7 @@ public class BigNumber
             Digits = Digits.GetRange(0, Digits.Count - firstNonZeroIndex);
         }
     }
-    
+
     /// <summary>
     /// Переводит числовое значение BigNumber объекта в его эквивалент в виде строки.
     /// </summary>
@@ -524,7 +579,7 @@ public class BigNumber
     public override string ToString()
     {
         var sb = new StringBuilder();
-        
+
         if (IsNegative)
             sb.Append('-');
 
