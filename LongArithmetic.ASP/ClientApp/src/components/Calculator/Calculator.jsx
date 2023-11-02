@@ -125,7 +125,13 @@ export const Calculator = () => {
         performOperation('mod');
       }
     },
-    factorial: () => performOperation('factorial'),
+    factorial: () => {
+      if (parseInt(inputX) > 5000) {
+        setAnswer('Эта операция может занять очень много времени.');
+      } else {
+        performOperation('factorial');
+      }
+    },
     pow: () => {
       if (parseInt(inputX) === 0) {
         alert('Нельзя возвести нуль в степень.');
@@ -161,14 +167,14 @@ export const Calculator = () => {
   const operationButtons = [
     { onClick: operations.add, text: 'x + y' },
     { onClick: operations.subtract, text: 'x - y' },
-    { onClick: operations.factorial, text: 'x!', disabled: true },
+    { onClick: operations.factorial, text: 'x!' },
     { onClick: operations.pow2, text: 'x ^ 2' },
     { onClick: swapInputs, text: 'x <-> y', functional: true },
     { onClick: clearInputs, text: 'очистить', functional: true, remove: true },
 
     { onClick: operations.multiply, text: 'x * y' },
     { onClick: operations.divide, text: 'x / y' },
-    { onClick: operations.mod, text: 'mod', disabled: true },
+    { onClick: operations.mod, text: 'x % y' },
     { onClick: operations.pow3, text: 'x ^ 3' },
     { onClick: answerToX, text: 'ответ -> x', functional: true },
     {
@@ -178,8 +184,8 @@ export const Calculator = () => {
     },
 
     { onClick: operations.isPrime, text: 'простое?', disabled: true },
-    { onClick: operations.gcd, text: 'НОД', disabled: true },
-    { onClick: operations.lcm, text: 'НОК', disabled: true },
+    { onClick: operations.gcd, text: 'НОД' },
+    { onClick: operations.lcm, text: 'НОК' },
     { onClick: operations.pow, text: 'x ^ y' },
     { onClick: answerToY, text: 'ответ -> y', functional: true },
     {
