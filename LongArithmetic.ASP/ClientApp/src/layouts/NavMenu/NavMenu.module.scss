@@ -1,0 +1,30 @@
+﻿@import '../../scss/variables';
+
+.root {
+  color: $lightTextColor;
+  background-color: $headerColor;
+
+  a {
+    color: $lightTextColor;
+  }
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 1200px;
+  min-height: 90px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.navigation {
+  .link {
+    font-weight: 700;
+  }
+}
