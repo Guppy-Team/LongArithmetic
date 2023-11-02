@@ -157,10 +157,10 @@ public class ApiController : ControllerBase
 
         BigNumber result = BigNumber.GreatestCommonDivisor(x, y);
 
-        return Ok(new BaseResponse(result.ToString()));
+        return Ok(new BaseResponse(BigNumber.Abs(result).ToString()));
     }
 
-    [HttpPost("gcd")]
+    [HttpPost("lcm")]
     public IActionResult LeastCommonMultiple([FromBody] BaseRequest request)
     {
         if (request == null)
@@ -174,7 +174,7 @@ public class ApiController : ControllerBase
 
         BigNumber result = BigNumber.LeastCommonMultiple(x, y);
 
-        return Ok(new BaseResponse(result.ToString()));
+        return Ok(new BaseResponse(BigNumber.Abs(result).ToString()));
     }
 
     [HttpPost("greaterthan")]
