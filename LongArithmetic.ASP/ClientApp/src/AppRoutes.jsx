@@ -1,5 +1,5 @@
-import {Counter} from './pages/Counter';
-import {Home} from './pages/Home';
+import { About } from './pages/About';
+import { Home } from './pages/Home';
 
 const AppRoutes = [
   {
@@ -7,8 +7,8 @@ const AppRoutes = [
     element: <Home />,
   },
   {
-    path: '/counter',
-    element: <Counter />,
+    path: '/about',
+    element: <About />,
   },
 ];
 

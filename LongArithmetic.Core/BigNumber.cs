@@ -5,7 +5,7 @@ namespace LongArithmetic.Core;
 public class BigNumber
 {
     private List<int> Digits { get; set; }
-    
+
     private bool IsNegative { get; }
 
     public static BigNumber Zero => new BigNumber("0");
@@ -60,9 +60,9 @@ public class BigNumber
     {
         Digits = digits;
         this.IsNegative = !digits.SequenceEqual(new List<int>(0)) && isNegative;
-        
+
         RemoveLeadingZeros();
-        
+
         if(Digits.Count == 1 && Digits[0] == 0)
             this.IsNegative = false;
     }
@@ -86,7 +86,7 @@ public class BigNumber
 
         BigNumber r = new BigNumber(right.ToString());
         BigNumber result = left + r;
-      
+
         return new BigNumber(result.ToString());
     }
 
@@ -145,13 +145,102 @@ public class BigNumber
 
     public static BigNumber Add(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        if (left.IsNegative == right.IsNegative)
+            return AddAbsolute(left, right, left.IsNegative);
+
+        int compare = CompareAbsolute(left, right);
+
+        if (compare == 0)
+            return BigNumber.Zero;
+
+        if (compare > 0)
+            return SubtractAbsolute(left, right, left.IsNegative);
+
+        return SubtractAbsolute(right, left, right.IsNegative);
     }
 
     public static BigNumber Subtract(BigNumber left, BigNumber right)
     {
-        throw new NotImplementedException();
+        if (left.IsNegative != right.IsNegative)
+            return AddAbsolute(left, right, left.IsNegative);
+
+        int compare = CompareAbsolute(left, right);
+
+        if (compare == 0)
+            return BigNumber.Zero;
+
+        if (compare > 0)
+            return SubtractAbsolute(left, right, left.IsNegative);
+
+        return SubtractAbsolute(right, left, !right.IsNegative);
     }
+
+    private static BigNumber AddAbsolute(BigNumber left, BigNumber right, bool isNegative)
+    {
+        List<int> result = new List<int>();
+        int carry = 0;
+        int maxLength = Math.Max(left.Length, right.Length);
+
+        for (int i = 0; i < maxLength || carry > 0; i++)
+        {
+            int leftDigit = (i < left.Length) ? left[i] : 0;
+            int rightDigit = (i < right.Length) ? right[i] : 0;
+            int sum = leftDigit + rightDigit + carry;
+            result.Add(sum % 10);
+            carry = sum / 10;
+        }
+
+        return new BigNumber(result, isNegative);
+    }
+
+    private static BigNumber SubtractAbsolute(BigNumber left, BigNumber right, bool isNegative)
+    {
+        List<int> result = new List<int>();
+        int borrow = 0;
+        int maxLength = Math.Max(left.Length, right.Length);
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int leftDigit = (i < left.Length) ? left[i] : 0;
+            int rightDigit = (i < right.Length) ? right[i] : 0;
+            int diff = leftDigit - rightDigit - borrow;
+
+            if (diff < 0)
+            {
+                diff += 10;
+                borrow = 1;
+            }
+            else
+            {
+                borrow = 0;
+            }
+
+            result.Add(diff);
+        }
+
+        return new BigNumber(result, isNegative);
+    }
+
+    private static int CompareAbsolute(BigNumber left, BigNumber right)
+    {
+        if (left.Length > right.Length)
+            return 1;
+
+        if (left.Length < right.Length)
+            return -1;
+
+        for (int i = left.Length - 1; i >= 0; i--)
+        {
+            if (left[i] > right[i])
+                return 1;
+
+            if (left[i] < right[i])
+                return -1;
+        }
+
+        return 0;
+    }
+
 
     /// <summary>
     ///
@@ -246,7 +335,7 @@ public class BigNumber
 
         return quotient;
     }
-    
+
     /// <summary>
     /// Сравнивает два числа типа BigNumber.
     /// </summary>
@@ -282,7 +371,7 @@ public class BigNumber
 
         return 0;
     }
-    
+
     private BigNumber MultiplyBy10()
     {
         var ten = new BigNumber(new List<int>
@@ -291,7 +380,7 @@ public class BigNumber
         }, false);
         return Multiply(this, ten);
     }
-    
+
     public BigNumber Negate()
     {
         return new BigNumber(Digits, !IsNegative);
@@ -470,7 +559,7 @@ public class BigNumber
         while (divisor != 0)
         {
             //Схраняем делитель во временной переменной
-            BigNumber temp = divisor; 
+            BigNumber temp = divisor;
             //Находим остаток от деления
             divisor = BigNumber.Mod(dividend, divisor);
             //Заменяем делимое делителем
